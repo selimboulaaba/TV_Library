@@ -7,7 +7,7 @@ function App() {
   const [text, setText] = useState('Waiting for API..')
 
   useEffect(() => {
-    axios.get('http://localhost:3000')
+    axios.get(import.meta.env.VITE_BACK_URL)
     .then(response => {
       setText(response.data)
     })
