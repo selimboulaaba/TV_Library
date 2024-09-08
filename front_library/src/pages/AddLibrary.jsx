@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { getSearch } from '../services/tmdb'
+import { getSearch } from '../services/TMDB'
 import Paginator from '../components/Paginator'
 
 function AddLibrary() {
