@@ -2,6 +2,8 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { getSearch } from '../services/TMDB'
 import Paginator from '../components/Paginator'
+import Loading from '../components/Loading'
+import TiltedPoster from '../components/TiltedPoster'
 
 function AddLibrary() {
 
@@ -20,7 +22,6 @@ function AddLibrary() {
     }, [])
 
     const fetchData = (page) => {
-        console.log('page= ', page)
         setLoading(true)
         getSearch(search, page)
             .then(response => {
@@ -38,18 +39,20 @@ function AddLibrary() {
     }
 
     return (
-        <div className='grid gap-3 justify-items-center'>
+        <div className='grid gap-3 justify-items-center pb-10'>
             <div className='text-center mt-4'>{text}</div>
             <form className='w-[90%] sm:w-[80%] md:w-[60%] grid grid-cols-12 gap-3'>
                 <input className='border col-span-9 border-gray-700 rounded-xl px-4 py-3 ' placeholder='Search for a Movie/Serie' type='text' value={search} onChange={(event) => { setSearch(event.target.value) }} />
                 <button className='col-span-3 font border border-black hover:bg-black hover:text-white rounded-xl py-3' onClick={event => { event.preventDefault(); fetchData(1) }}>Fetch</button>
             </form>
             {loading
-                ? <div>Loading..</div>
+                ? <Loading />
                 : <>
                     <div className='grid grid-cols-12 gap-3 p-5'>
                         {list.length != 0 && list.map(object => (
-                            <img className='col-span-3' src={"https://image.tmdb.org/t/p/w500" + object.poster_path} alt={object.title} key={object.id} />
+                            <div className="col-span-6 md:col-span-3 grid w-full place-content-center" key={object.id}>
+                                <TiltedPoster src={"https://image.tmdb.org/t/p/w500" + object.poster_path} title={object.title} />
+                            </div>
                         ))}
                     </div>
                     {list.length != 0 && <Paginator totalPages={totalPages} currentPage={currentPage} fetchData={fetchData} />}
