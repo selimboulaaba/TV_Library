@@ -1,20 +1,17 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css'
+import AddLibrary from "./pages/addLibrary";
 
 function App() {
 
-  const [text, setText] = useState('Waiting for API..')
 
-  useEffect(() => {
-    axios.get(import.meta.env.VITE_BACK_URL)
-    .then(response => {
-      setText(response.data)
-    })
-  }, [])
-  
+
   return (
-    <div className='text-center'>{text}</div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="" element={<AddLibrary />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
