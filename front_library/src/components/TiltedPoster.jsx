@@ -68,7 +68,7 @@ function TiltedPoster({ src, title }) {
             transform: "translateZ(50px)",
             transformStyle: "preserve-3d",
           }}
-          className="text-center text-2xl font-bold text-white bg-black bg-opacity-50 px-2 pyy-1 rounded-xl"
+          className="text-center text-2xl font-bold text-white bg-black bg-opacity-50 px-2 py-1 rounded-xl"
         >
           {title}
         </p>
