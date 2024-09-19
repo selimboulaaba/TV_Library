@@ -3,7 +3,7 @@ import { TvsService } from './tvs.service';
 import { TvsController } from './tvs.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { tvSchema } from './entities/tv.entity';
-import { ConfirmationMiddleware } from 'src/middlewares/confirmation/confirmation.middleware';
+import { ConfirmationMiddleware } from '../middlewares/confirmation/confirmation.middleware';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'Tv', schema: tvSchema }])],
