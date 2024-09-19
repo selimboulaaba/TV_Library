@@ -7,7 +7,6 @@ export const tvSchema = new mongoose.Schema({
     genre: { type: [String], required: true },
     date: { type: String, required: true },
     isMovie: { type: Boolean, required: true },
-    verified: { type: Boolean, required: true, default: false },
     tmdbId: { type: Number, required: true },
 });
 
@@ -17,7 +16,6 @@ export interface Tv extends Document {
     poster: string;
     genre: string[];
     date: string;
-    verified: boolean;
     isMovie: boolean;
     tmdbId: number;
 }

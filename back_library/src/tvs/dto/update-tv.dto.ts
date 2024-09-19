@@ -7,7 +7,6 @@ export class UpdateTvDto extends PartialType(CreateTvDto) {
     poster: string;
     genre: string[];
     date: string;
-    verified: boolean;
     isMovie: boolean;
     tmdbId: number;
 }

@@ -18,6 +18,11 @@ export class TvsController {
     return this.tvsService.findAll(filter);
   }
 
+  @Get('tmdb/:id/:isMovie')
+  findOneByTMDB(@Param('id') id: string, @Param('isMovie') isMovie: boolean) {
+    return this.tvsService.findbyTMDBId(+id, isMovie);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tvsService.findOne(+id);
@@ -28,8 +33,8 @@ export class TvsController {
     return this.tvsService.update(+id, updateTvDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tvsService.remove(+id);
+  @Delete(':id/:password')
+  remove(@Param('id') id: string, @Param('password') password: string) {
+    return this.tvsService.remove(id);
   }
 }

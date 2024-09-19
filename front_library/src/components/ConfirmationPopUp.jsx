@@ -5,7 +5,6 @@ function ConfirmationPopUp({ open, closeModal, password, setPassword, accept }) 
 
     return (
         <Popup open={open} closeOnDocumentClick onClose={closeModal} modal>
-            <form onSubmit={event => event.preventDefault()}>
             <div className="modal rounded-lg border-4 border-[#6e452a] bg-[#1f1711] py-10 sm:p-10 w-[90vw] md:w-[50vw] text-center">
                 <div className="header text-2xl md:text-3xl text-[#6e452a] font-bold text-nowrap text-center">Confirm with Password</div>
                 <div className="mt-6 sm:mt-10">
@@ -20,7 +19,6 @@ function ConfirmationPopUp({ open, closeModal, password, setPassword, accept }) 
                     </button>
                 </div>
             </div>
-            </form>
         </Popup>
     )
 }
