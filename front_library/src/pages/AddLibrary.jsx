@@ -6,10 +6,10 @@ import Loading from '../components/Loading'
 import TiltedPoster from '../components/TiltedPoster'
 import '../assets/css/Search.css'
 import NoResults from '../components/NoResults'
+import { Link } from 'react-router-dom'
 
 function AddLibrary() {
 
-    const [text, setText] = useState('Waiting for API..')
     const [search, setSearch] = useState("")
     const [list, setList] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -17,18 +17,10 @@ function AddLibrary() {
     const [currentPage, setCurrentPage] = useState(1)
     const [isMovie, setIsMovie] = useState(true)
 
-    useEffect(() => {
-        axios.get(import.meta.env.VITE_BACK_URL)
-            .then(response => {
-                setText(response.data)
-            })
-    }, [])
-
-    const fetchData = (page) => {
+    const fetchData = async(page) => {
         setLoading(true)
-        getSearch(search, page, isMovie ? "movie" : "tv")
+        await getSearch(search, page, isMovie ? "movie" : "tv")
             .then(response => {
-                console.log(response.data)
                 setList(response.data.results)
                 setTotalPages(response.data.total_pages)
                 setCurrentPage(response.data.page)
@@ -42,8 +34,7 @@ function AddLibrary() {
     }
 
     return (
-        <div className='grid gap-3 justify-items-center pb-10'>
-            <div className='text-center mt-4'>{text}</div>
+        <div className='grid gap-3 justify-items-center pb-10 mt-[70px]'>
             <form className='w-[90%] sm:w-[80%] md:w-[60%] grid grid-cols-12 gap-3'>
                 <h1 className='col-span-7 text-center self-center text-xl sm:text-2xl'>Search for: <strong className='underline'>{isMovie ? 'Movies' : 'TV Series'}</strong></h1>
                 <label className="col-start-9 col-span-3 relative inline-flex items-center cursor-pointer">
@@ -71,7 +62,9 @@ function AddLibrary() {
                     <div className='grid grid-cols-12 gap-3 p-5'>
                         {list?.length != 0 && list?.map(object => (
                             <div className="col-span-6 md:col-span-3 grid w-full place-content-center" key={object.id}>
-                                <TiltedPoster src={"https://image.tmdb.org/t/p/w500" + object.poster_path} title={object.title ? object.title : object.name} />
+                                <Link to={`/${isMovie ? "movie" : "tv"}/${object.id}`}>
+                                    <TiltedPoster src={"https://image.tmdb.org/t/p/w500" + object.poster_path} title={object.title ? object.title : object.name} />
+                                </Link>
                             </div>
                         ))}
                     </div>

@@ -2,19 +2,20 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TvsService } from './tvs.service';
 import { CreateTvDto } from './dto/create-tv.dto';
 import { UpdateTvDto } from './dto/update-tv.dto';
+import { FilterTvDto } from './dto/filter-tv.dto';
 
 @Controller('tvs')
 export class TvsController {
-  constructor(private readonly tvsService: TvsService) {}
+  constructor(private readonly tvsService: TvsService) { }
 
   @Post()
   create(@Body() createTvDto: CreateTvDto) {
     return this.tvsService.create(createTvDto);
   }
 
-  @Get()
-  findAll() {
-    return this.tvsService.findAll();
+  @Post("paginate")
+  findAll(@Body() filter: FilterTvDto) {
+    return this.tvsService.findAll(filter);
   }
 
   @Get(':id')

@@ -1,19 +1,23 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import mongoose, { Document } from "mongoose";
 
-@Schema()
-export class Tv {
-    @Prop()
+export const tvSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    poster: { type: String, required: true },
+    genre: { type: [String], required: true },
+    date: { type: String, required: true },
+    isMovie: { type: Boolean, required: true },
+    verified: { type: Boolean, required: true, default: false },
+    tmdbId: { type: Number, required: true },
+});
+
+export interface Tv extends Document {
     title: string;
-    @Prop()
     description: string;
-    @Prop()
     poster: string;
-    @Prop()
-    genre: string;
-    @Prop()
+    genre: string[];
     date: string;
-    @Prop({ default: false })
     verified: boolean;
-    @Prop()
-    isMovie: boolean
+    isMovie: boolean;
+    tmdbId: number;
 }
