@@ -36,13 +36,13 @@ export class TvsService {
     try {
       const result = { shows: [], total_pages: 0 }
       if (filter.type === 'All') {
-        result.shows = await this.tvModel.find();
-        result.total_pages = (await this.tvModel.find().countDocuments()) / 20;
+        result.shows = await this.tvModel.find().skip(24 * (filter.page - 1)).limit(24);
+        result.total_pages = (await this.tvModel.find().countDocuments()) / 24;
       } else {
-        result.shows = await this.tvModel.find({ isMovie: filter.type === "Movies" ? true : false });
-        result.total_pages = (await this.tvModel.find({ isMovie: filter.type === "Movies" ? true : false }).countDocuments()) / 20;
+        result.shows = await this.tvModel.find({ isMovie: filter.type === "Movies" ? true : false }).skip(24 * (filter.page - 1)).limit(24);
+        result.total_pages = (await this.tvModel.find({ isMovie: filter.type === "Movies" ? true : false }).countDocuments()) / 24;
       }
-      result.total_pages = Math.floor(result.total_pages)
+      result.total_pages = Math.floor(result.total_pages + 1)
 
       return result
     } catch (error) {

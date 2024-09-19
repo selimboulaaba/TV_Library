@@ -6,6 +6,7 @@ import Loading from '../components/Loading'
 import '../assets/css/addButton.css'
 import { addToLibrary } from '../services/ShowService';
 import { Bounce, toast } from 'react-toastify';
+import ConfirmationPopUp from '../components/ConfirmationPopUp';
 
 function Show() {
     const { id, type } = useParams();
@@ -14,6 +15,14 @@ function Show() {
     const [loading, setLoading] = useState(true)
     const [showMore, setShowMore] = useState(false)
     const [loadingAdd, setLoadingAdd] = useState(false)
+    const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+    const closeConfirmationModal = () => {
+        setConfirmationModalOpen(false);
+        setPassword('')
+    }
+    const [password, setPassword] = useState('');
+
+
 
     const fetchData = async () => {
         await getById(id, type)
@@ -43,7 +52,16 @@ function Show() {
         }
     }, [])
 
-    const addShow = async () => {
+    const addShow = () => {
+        setConfirmationModalOpen(true)
+    }
+
+    const toggleShowMore = () => {
+        setShowMore(!showMore)
+    }
+
+    const accept = async () => {
+        closeConfirmationModal()
         setLoadingAdd(true)
         const payload = {};
         payload.title = show.title ? show.title : show.name
@@ -53,6 +71,7 @@ function Show() {
         payload.isMovie = (type === 'movie') ? true : false
         payload.genre = show.genres.map(genre => genre.name)
         payload.tmdbId = show.id
+        payload.password = password
 
         await addToLibrary(payload)
             .then(response => {
@@ -88,10 +107,6 @@ function Show() {
             .finally(() => {
                 setLoadingAdd(false)
             })
-    }
-
-    const toggleShowMore = () => {
-        setShowMore(!showMore)
     }
 
     return (
@@ -145,6 +160,7 @@ function Show() {
                     </div>
                 </div>
             }
+            <ConfirmationPopUp open={confirmationModalOpen} closeModal={closeConfirmationModal} password={password} setPassword={setPassword} accept={accept} />
         </div>
     )
 }

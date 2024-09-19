@@ -54,7 +54,7 @@ function TiltedPoster({ src, title }) {
         transform,
         backgroundImage: `url(${src})`
       }}
-      className="bg-cover bg-center relative aspect-[3/4] w-[40vw] sm:w-[45vw] md:w-[22vw] rounded-xl border border-orange-600 bg-gradient-to-br from-indigo-300 to-violet-300"
+      className="bg-cover bg-center relative aspect-[3/4] w-[44vw] sm:w-[45vw] md:w-[22vw] lg:w-[15vw] rounded-xl border border-orange-600 bg-gradient-to-br from-indigo-300 to-violet-300"
     >
       <div
         style={{

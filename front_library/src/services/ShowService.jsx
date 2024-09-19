@@ -6,7 +6,7 @@ export const addToLibrary = async (payload) => {
     return await axios.post(url, payload)
 }
 
-export const getShows = async (type) => {
-    return await axios.post(url + "/paginate", { type })
+export const getShows = async (type, page) => {
+    return await axios.post(url + "/paginate", { type, page })
 }
 
