@@ -1,5 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateTvDto } from './create-tv.dto';
+import { TvType } from '../entities/tv.type.enum';
 
 export class UpdateTvDto extends PartialType(CreateTvDto) {
     title: string;
@@ -7,6 +8,6 @@ export class UpdateTvDto extends PartialType(CreateTvDto) {
     poster: string;
     genre: string[];
     date: string;
-    isMovie: boolean;
+    type: TvType;
     tmdbId: number;
 }

@@ -3,7 +3,7 @@ import { TvsService } from './tvs.service';
 import { CreateTvDto } from './dto/create-tv.dto';
 import { UpdateTvDto } from './dto/update-tv.dto';
 import { FilterTvDto } from './dto/filter-tv.dto';
-import { UpdatePausedAt } from './dto/updatePause.dto';
+import { TvType } from './entities/tv.type.enum';
 
 @Controller('tvs')
 export class TvsController {
@@ -19,24 +19,19 @@ export class TvsController {
     return this.tvsService.findAll(filter);
   }
 
-  @Get('tmdb/:id/:isMovie')
-  findOneByTMDB(@Param('id') id: string, @Param('isMovie') isMovie: boolean) {
-    return this.tvsService.findbyTMDBId(+id, isMovie);
+  @Get('tmdb/:id/:type')
+  findOneByTMDB(@Param('id') id: string, @Param('type') type: TvType) {
+    return this.tvsService.findbyTMDBId(+id, type);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tvsService.findOne(+id);
-  }
-
-  @Put(':id')
-  updatePausedAt(@Param('id') id: string, @Body() updatePausedAt: UpdatePausedAt) {
+  @Put('pauseAt/:id')
+  updatePausedAt(@Param('id') id: string, @Body() updatePausedAt: any) {
     return this.tvsService.updatePausedAt(id, updatePausedAt.pauseAt);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTvDto: UpdateTvDto) {
-    return this.tvsService.update(+id, updateTvDto);
+  @Put('status/:id')
+  updateStatus(@Param('id') id: string, @Body() updatePausedAt: any) {
+    return this.tvsService.updateStatus(id, updatePausedAt.status);
   }
 
   @Delete(':id/:password')

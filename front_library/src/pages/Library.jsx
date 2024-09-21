@@ -6,16 +6,30 @@ import TiltedPoster from '../components/TiltedPoster'
 import { Link } from 'react-router-dom'
 import Paginator from '../components/Paginator'
 import NoResults from '../components/NoResults'
+import { MdOutlineLiveTv } from 'react-icons/md'
+import { BiCameraMovie } from 'react-icons/bi'
+import { PiFloppyDisk } from 'react-icons/pi'
+import { CiCircleCheck } from "react-icons/ci";
+import { CiCircleRemove } from "react-icons/ci";
+import { CiCircleMore } from "react-icons/ci";
+import { CiCircleQuestion } from "react-icons/ci";
+import { CiCircleMinus } from "react-icons/ci";
+import { CiClock1 } from "react-icons/ci";
 
 function Library() {
-    const [type, setType] = useState('All')
+    const [type, setType] = useState(null)
     const [shows, setShows] = useState([])
     const [loading, setLoading] = useState(true)
     const [totalPages, setTotalPages] = useState(null)
     const [currentPage, setCurrentPage] = useState(1)
+    const [status, setStatus] = useState(null)
+    const statuses = [null, "To Watch", "Watching", "Completed", "Waiting", "Dropped"]
+    const statusesEnum = [null, "TO_WATCH", "WATCHING", "COMPLETED", "WAITING", "DROPPED"]
+    const types = [null, "Movie", "Tv"]
+    const typesEnum = [null, "MOVIE", "TV_SERIE"]
 
-    const fetchData = async (filterType, page) => {
-        await getShows(filterType, page)
+    const fetchData = async (type, currentPage, status) => {
+        await getShows((typesEnum[types.indexOf(type)]), currentPage, (statusesEnum[statuses.indexOf(status)]))
             .then(response => {
                 setShows(response.data.shows)
                 setTotalPages(response.data.total_pages)
@@ -30,12 +44,23 @@ function Library() {
 
     useEffect(() => {
         setLoading(true)
-        fetchData(type, currentPage);
-    }, [type, currentPage])
+        fetchData(type, currentPage, status);
+    }, [type, currentPage, status])
 
     return (
         <div className='mt-[50px]'>
-            <DropDownSelect type={type} setType={setType} />
+            <div className="flex items-center justify-center">
+                <DropDownSelect
+                    options={types}
+                    icons={[PiFloppyDisk, BiCameraMovie, MdOutlineLiveTv]}
+                    selected={type} setSelected={setType}
+                />
+                <DropDownSelect
+                    options={statuses}
+                    icons={[CiCircleMore, CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
+                    selected={status} setSelected={setStatus}
+                />
+            </div>
 
             {loading
                 ? <Loading />
@@ -44,7 +69,7 @@ function Library() {
                         <div className='grid grid-cols-12 gap-3 p-5'>
                             {shows?.map(show => (
                                 <div className="col-span-6 md:col-span-3 lg:col-span-2 grid w-full place-content-center" key={show._id}>
-                                    <Link to={`/${show.isMovie ? "movie" : "tv"}/${show.tmdbId}`}>
+                                    <Link to={`/${show.type}/${show.tmdbId}`}>
                                         <TiltedPoster src={"https://image.tmdb.org/t/p/w500" + show.poster} title={show.title} />
                                     </Link>
                                 </div>

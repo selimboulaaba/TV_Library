@@ -95,8 +95,8 @@ function Show() {
             payload.title = show.title ? show.title : show.name
             payload.description = show.overview
             payload.poster = show.poster_path
-            payload.date = (type === 'movie') ? show.release_date : show.first_air_date
-            payload.isMovie = (type === 'movie') ? true : false
+            payload.date = (type === 'MOVIE') ? show.release_date : show.first_air_date
+            payload.type = type
             payload.genre = show.genres.map(genre => genre.name)
             payload.tmdbId = show.id
             payload.password = password
@@ -231,6 +231,44 @@ function Show() {
             })
     }
 
+    const handleStatus = async () => {
+        setLoadingPausedAt(true)
+        await updatePausedAt(owned, pausedAt)
+            .then(response => {
+                if (!response.data.success) {
+                    toast.warn(response.data.message, {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                        transition: Bounce,
+                    });
+                } else {
+                    toast.success('Updated!', {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                        transition: Bounce,
+                    });
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => {
+                setLoadingPausedAt(false)
+            })
+    }
+
     return (
         <div className='mt-[70px] text-center'>
             {loading
@@ -258,12 +296,12 @@ function Show() {
                                 <div className="add-button-bottom"></div>
                                 <div className="add-button-base"></div>
                             </button>
-                            {owned && type === 'tv' && <div className="mt-5">
-                                <label htmlFor="watched-to" className="ml-3">Watched To:</label>
+                            {owned && type === 'TV_SERIE' && <div className="mt-5">
+                                <label htmlFor="watched-to-md" className="ml-3">Watched To:</label>
                                 <br />
                                 <form>
                                     <div className='mt-1 flex'>
-                                        <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to' placeholder='Where to continue ?' className="py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
+                                        <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to-md' placeholder='Where to continue ?' className="py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
                                         <button onClick={handlePausedAt} disabled={loadingPausedAt} className={`${loadingPausedAt && 'hover:bg-white active:border-2'} min-w-[75px] relative flex items-center justify-center hover:bg-gray-200 hover:text-black active:border focus bg-white py-2 px-3 border-2 border-b-gray-400 shadow-lg`}>
                                             {loadingPausedAt ? <Spinner /> : "Save"}
                                         </button>
@@ -274,14 +312,14 @@ function Show() {
                     </div>
                     <div className='text-left md:text-center col-span-12 px-10 text-lg'>
                         <div className='font-bold text-[#6e452a]'>Release Date:</div>
-                        <div className='text-[16px]'>{(type === 'movie') ? show.release_date : show.first_air_date}</div>
+                        <div className='text-[16px]'>{(type === 'MOVIE') ? show.release_date : show.first_air_date}</div>
                         <div className='font-bold text-[#6e452a]'>Genre:</div>
                         <div className='text-[16px]'>
                             {show.genres.map((genre, index) => (
                                 genre.name + (index !== show.genres.length - 1 ? ', ' : '')
                             ))}
                         </div>
-                        {type === 'tv' &&
+                        {type === 'TV_SERIE' &&
                             <>
                                 <div className='font-bold text-[#6e452a]'>Seasons:</div>
                                 {show.seasons.map((season, index) => (
@@ -291,12 +329,12 @@ function Show() {
                                 ))}
                             </>
                         }
-                        {owned && type === 'tv' && <div className="block md:hidden">
-                            <label htmlFor="watched-to" className="font-bold text-[#6e452a]">Watched To:</label>
+                        {owned && type === 'TV_SERIE' && <div className="block md:hidden">
+                            <label htmlFor="watched-to-sm" className="font-bold text-[#6e452a]">Watched To:</label>
                             <br />
                             <form>
                                 <div className='mt-1 flex w-full sm:w-[70%]'>
-                                    <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to' placeholder='Where to continue ?' className="w-[70%] py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
+                                    <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to-sm' placeholder='Where to continue ?' className="w-[70%] py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
                                     <button onClick={handlePausedAt} disabled={loadingPausedAt} className={`${loadingPausedAt && 'hover:bg-white active:border-2'} w-[30%] min-w-[75px] relative flex items-center justify-center hover:bg-gray-200 hover:text-black active:border focus bg-white py-2 px-3 border-2 border-b-gray-400 shadow-lg`}>
                                         {loadingPausedAt ? <Spinner /> : "Save"}
                                     </button>

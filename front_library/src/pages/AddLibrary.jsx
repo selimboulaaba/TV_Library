@@ -62,7 +62,7 @@ function AddLibrary() {
                     <div className='grid grid-cols-12 gap-3 p-5'>
                         {list?.length != 0 && list?.map(object => (
                             <div className="col-span-6 md:col-span-3 lg:col-span-2 grid w-full place-content-center" key={object.id}>
-                                <Link to={`/${isMovie ? "movie" : "tv"}/${object.id}`}>
+                                <Link to={`/${isMovie ? "MOVIE" : "TV_SERIE"}/${object.id}`}>
                                     <TiltedPoster src={"https://image.tmdb.org/t/p/w500" + object.poster_path} title={object.title ? object.title : object.name} />
                                 </Link>
                             </div>
