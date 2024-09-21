@@ -236,7 +236,7 @@ function Show() {
             {loading
                 ? <Loading />
                 : <div className='grid grid-cols-12 gap-3 pb-20'>
-                    <div className='col-span-12 md:col-span-6 md:mr-10'>
+                    <div className='col-span-12 md:col-span-6 md:mr-10 p-1'>
                         <Poster src={show.poster_path} trailer={trailer?.key} />
                     </div>
                     <div className='text-left col-span-12 md:col-start-7 md:col-span-6 md:pt-16 px-10 md:px-0 md:pr-4'>
@@ -246,10 +246,6 @@ function Show() {
                                 <div className="add-button-bottom"></div>
                                 <div className="add-button-base"></div>
                             </button>
-                            {owned && <div className="container">
-                                <input required="" type="text" name="text" className="input" />
-                                <label className="label">Username</label>
-                            </div>}
                         </div>
 
                         <h1 className='font-bold text-3xl text-[#6e452a] mb-5'>{show.title ? show.title : show.name}</h1>
@@ -265,12 +261,14 @@ function Show() {
                             {owned && type === 'tv' && <div className="mt-5">
                                 <label htmlFor="watched-to" className="ml-3">Watched To:</label>
                                 <br />
-                                <div className='mt-1 flex'>
-                                    <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to' placeholder='Where to continue ?' className="py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
-                                    <button onClick={handlePausedAt} disabled={loadingPausedAt} className={`${loadingPausedAt && 'hover:bg-white active:border-2'} min-w-[75px] relative flex items-center justify-center hover:bg-gray-200 hover:text-black active:border focus bg-white py-2 px-3 border-2 border-b-gray-400 shadow-lg`}>
-                                        {loadingPausedAt ? <Spinner /> : "Save"}
-                                    </button>                              
-                                </div>
+                                <form>
+                                    <div className='mt-1 flex'>
+                                        <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to' placeholder='Where to continue ?' className="py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
+                                        <button onClick={handlePausedAt} disabled={loadingPausedAt} className={`${loadingPausedAt && 'hover:bg-white active:border-2'} min-w-[75px] relative flex items-center justify-center hover:bg-gray-200 hover:text-black active:border focus bg-white py-2 px-3 border-2 border-b-gray-400 shadow-lg`}>
+                                            {loadingPausedAt ? <Spinner /> : "Save"}
+                                        </button>
+                                    </div>
+                                </form>
                             </div>}
                         </div>
                     </div>
@@ -293,6 +291,18 @@ function Show() {
                                 ))}
                             </>
                         }
+                        {owned && type === 'tv' && <div className="block md:hidden">
+                            <label htmlFor="watched-to" className="font-bold text-[#6e452a]">Watched To:</label>
+                            <br />
+                            <form>
+                                <div className='mt-1 flex w-full sm:w-[70%]'>
+                                    <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to' placeholder='Where to continue ?' className="w-[70%] py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
+                                    <button onClick={handlePausedAt} disabled={loadingPausedAt} className={`${loadingPausedAt && 'hover:bg-white active:border-2'} w-[30%] min-w-[75px] relative flex items-center justify-center hover:bg-gray-200 hover:text-black active:border focus bg-white py-2 px-3 border-2 border-b-gray-400 shadow-lg`}>
+                                        {loadingPausedAt ? <Spinner /> : "Save"}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>}
                     </div>
                 </div>
             }
