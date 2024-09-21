@@ -4,9 +4,10 @@ import { getById, getTrailerById } from '../services/TMDB';
 import Poster from '../components/Poster';
 import Loading from '../components/Loading'
 import '../assets/css/addButton.css'
-import { addToLibrary, getShow, removeFromLibrary } from '../services/ShowService';
+import { addToLibrary, getShow, removeFromLibrary, updatePausedAt } from '../services/ShowService';
 import { Bounce, toast } from 'react-toastify';
 import ConfirmationPopUp from '../components/ConfirmationPopUp';
+import Spinner from '../components/Spinner';
 
 function Show() {
     const { id, type } = useParams();
@@ -27,8 +28,8 @@ function Show() {
     }
     const [password, setPassword] = useState('');
     const [owned, setOwned] = useState(null)
-
-
+    const [pausedAt, setPausedAt] = useState('')
+    const [loadingPausedAt, setLoadingPausedAt] = useState(false)
 
     const fetchData = async () => {
         await getById(id, type)
@@ -40,6 +41,7 @@ function Show() {
         await getShow(id, type)
             .then(response => {
                 setOwned(response.data._id)
+                setPausedAt(response.data.pauseAt)
             })
         await getTrailerById(id, type)
             .then(response => {
@@ -191,6 +193,44 @@ function Show() {
         }
     }
 
+    const handlePausedAt = async () => {
+        setLoadingPausedAt(true)
+        await updatePausedAt(owned, pausedAt)
+            .then(response => {
+                if (!response.data.success) {
+                    toast.warn(response.data.message, {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                        transition: Bounce,
+                    });
+                } else {
+                    toast.success('Updated!', {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "dark",
+                        transition: Bounce,
+                    });
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => {
+                setLoadingPausedAt(false)
+            })
+    }
+
     return (
         <div className='mt-[70px] text-center'>
             {loading
@@ -206,6 +246,10 @@ function Show() {
                                 <div className="add-button-bottom"></div>
                                 <div className="add-button-base"></div>
                             </button>
+                            {owned && <div className="container">
+                                <input required="" type="text" name="text" className="input" />
+                                <label className="label">Username</label>
+                            </div>}
                         </div>
 
                         <h1 className='font-bold text-3xl text-[#6e452a] mb-5'>{show.title ? show.title : show.name}</h1>
@@ -218,6 +262,16 @@ function Show() {
                                 <div className="add-button-bottom"></div>
                                 <div className="add-button-base"></div>
                             </button>
+                            {owned && type === 'tv' && <div className="mt-5">
+                                <label htmlFor="watched-to" className="ml-3">Watched To:</label>
+                                <br />
+                                <div className='mt-1 flex'>
+                                    <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to' placeholder='Where to continue ?' className="py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
+                                    <button onClick={handlePausedAt} disabled={loadingPausedAt} className={`${loadingPausedAt && 'hover:bg-white active:border-2'} min-w-[75px] relative flex items-center justify-center hover:bg-gray-200 hover:text-black active:border focus bg-white py-2 px-3 border-2 border-b-gray-400 shadow-lg`}>
+                                        {loadingPausedAt ? <Spinner /> : "Save"}
+                                    </button>                              
+                                </div>
+                            </div>}
                         </div>
                     </div>
                     <div className='text-left md:text-center col-span-12 px-10 text-lg'>

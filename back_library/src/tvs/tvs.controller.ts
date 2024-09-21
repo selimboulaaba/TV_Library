@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { TvsService } from './tvs.service';
 import { CreateTvDto } from './dto/create-tv.dto';
 import { UpdateTvDto } from './dto/update-tv.dto';
 import { FilterTvDto } from './dto/filter-tv.dto';
+import { UpdatePausedAt } from './dto/updatePause.dto';
 
 @Controller('tvs')
 export class TvsController {
@@ -26,6 +27,11 @@ export class TvsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tvsService.findOne(+id);
+  }
+
+  @Put(':id')
+  updatePausedAt(@Param('id') id: string, @Body() updatePausedAt: UpdatePausedAt) {
+    return this.tvsService.updatePausedAt(id, updatePausedAt.pauseAt);
   }
 
   @Patch(':id')

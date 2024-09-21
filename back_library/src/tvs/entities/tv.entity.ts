@@ -8,6 +8,7 @@ export const tvSchema = new mongoose.Schema({
     date: { type: String, required: true },
     isMovie: { type: Boolean, required: true },
     tmdbId: { type: Number, required: true },
+    pauseAt: { type: String, required: false, default: '' },
 });
 
 export interface Tv extends Document {
@@ -18,4 +19,5 @@ export interface Tv extends Document {
     date: string;
     isMovie: boolean;
     tmdbId: number;
+    pauseAt: string;
 }

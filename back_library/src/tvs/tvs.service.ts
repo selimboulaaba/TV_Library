@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { Tv } from './entities/tv.entity';
 import { FilterTvDto } from './dto/filter-tv.dto';
 import { throwError } from 'rxjs';
+import { UpdatePausedAt } from './dto/updatePause.dto';
 
 @Injectable()
 export class TvsService {
@@ -57,6 +58,19 @@ export class TvsService {
 
   update(id: number, updateTvDto: UpdateTvDto) {
     return `This action updates a #${id} tv`;
+  }
+
+  async updatePausedAt(id: string, pauseAt: string) {
+    try {
+      const show = await this.tvModel.findByIdAndUpdate(id, { pauseAt })
+      if (show) {
+        return { success: true, show };
+      } else {
+        return { success: false, message: 'Show not Found!' };
+      }
+    } catch (error) {
+      return error;
+    }
   }
 
   async remove(id: string) {
