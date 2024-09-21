@@ -61,7 +61,12 @@ export class TvsService {
 
   async remove(id: string) {
     try {
-      await this.tvModel.findByIdAndDelete(id)
+      const show = await this.tvModel.findByIdAndDelete(id)
+      if (show) {
+        return { success: true };
+      } else {
+        return { success: false, message: 'Show not Found!' };
+      }
     } catch (error) {
       return error;
     }
