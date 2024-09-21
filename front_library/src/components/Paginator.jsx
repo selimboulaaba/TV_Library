@@ -19,7 +19,7 @@ function Paginator({ totalPages, currentPage, fetchData }) {
             {currentPage - 3 >= 1 && <div className='hidden md:block border-2 border-gray-500 rounded-lg' disabled>
                 <div className='h-8 w-8 sm:h-10 sm:w-10 p-2 text-center text-gray-500 text-xl font-bold flex items-center justify-center'>...</div>
             </div>}
-            {currentPage - 1 >= 1 && <div className='hidden md:block hover:cursor-pointer hover:bg-[#ff5722] border-2 border-gray-500 rounded-lg' onClick={() => fetchData(currentPage - 1)}>
+            {currentPage - 1 >= 1 && <div className='block hover:cursor-pointer hover:bg-[#ff5722] border-2 border-gray-500 rounded-lg' onClick={() => fetchData(currentPage - 1)}>
                 <div className='h-8 w-8 sm:h-10 sm:w-10 p-2 text-center text-gray-500 text-xl font-bold flex items-center justify-center'>{currentPage - 1}</div>
             </div>}
 
@@ -27,7 +27,7 @@ function Paginator({ totalPages, currentPage, fetchData }) {
                 <div className='h-8 w-8 sm:h-10 sm:w-10 p-2 text-[#ff5722] text-center text-xl font-bold flex items-center justify-center'>{currentPage}</div>
             </button>
 
-            {currentPage + 1 <= totalPages && <div className='hidden md:block hover:cursor-pointer hover:bg-[#ff5722] border-2 border-gray-500 rounded-lg' onClick={() => fetchData(currentPage + 1)}>
+            {currentPage + 1 <= totalPages && <div className='block hover:cursor-pointer hover:bg-[#ff5722] border-2 border-gray-500 rounded-lg' onClick={() => fetchData(currentPage + 1)}>
                 <div className='h-8 w-8 sm:h-10 sm:w-10 p-2 text-center text-gray-500 text-xl font-bold flex items-center justify-center'>{currentPage + 1}</div>
             </div>}
             {currentPage + 3 <= totalPages && <div className='hidden md:block border-2 border-gray-500 rounded-lg' disabled>

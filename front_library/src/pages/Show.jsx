@@ -74,80 +74,121 @@ function Show() {
     }
 
     const add = async () => {
-        closeAddModal()
-        setLoadingOwned(true)
-        const payload = {};
-        payload.title = show.title ? show.title : show.name
-        payload.description = show.overview
-        payload.poster = show.poster_path
-        payload.date = (type === 'movie') ? show.release_date : show.first_air_date
-        payload.isMovie = (type === 'movie') ? true : false
-        payload.genre = show.genres.map(genre => genre.name)
-        payload.tmdbId = show.id
-        payload.password = password
+        if (password === '') {
+            toast.error('Enter Password!', {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+                transition: Bounce,
+            });
+        } else {
+            closeAddModal()
+            setLoadingOwned(true)
+            const payload = {};
+            payload.title = show.title ? show.title : show.name
+            payload.description = show.overview
+            payload.poster = show.poster_path
+            payload.date = (type === 'movie') ? show.release_date : show.first_air_date
+            payload.isMovie = (type === 'movie') ? true : false
+            payload.genre = show.genres.map(genre => genre.name)
+            payload.tmdbId = show.id
+            payload.password = password
 
-        await addToLibrary(payload)
-            .then(response => {
-                if (!response.data.success) {
-                    toast.warn(response.data.message, {
-                        position: "bottom-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "dark",
-                        transition: Bounce,
-                    });
-                } else {
-                    setOwned(response.data.show._id)
-                    toast.success('Added to WatchList!', {
-                        position: "bottom-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "dark",
-                        transition: Bounce,
-                    });
-                }
-            })
-            .catch(error => {
-                console.log(error)
-            })
-            .finally(() => {
-                setLoadingOwned(false)
-            })
+            await addToLibrary(payload)
+                .then(response => {
+                    if (!response.data.success) {
+                        toast.warn(response.data.message, {
+                            position: "bottom-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "dark",
+                            transition: Bounce,
+                        });
+                    } else {
+                        setOwned(response.data.show._id)
+                        toast.success('Added to WatchList!', {
+                            position: "bottom-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "dark",
+                            transition: Bounce,
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+                .finally(() => {
+                    setLoadingOwned(false)
+                })
+        }
     }
 
     const remove = async () => {
-        closeRemoveModal()
-        setLoadingOwned(true)
-        await removeFromLibrary(owned, password)
-            .then(response => {
-                setOwned(null)
-                toast.success('Removed from WatchList!', {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                    transition: Bounce,
-                });
-            })
-            .catch(error => {
-                console.log(error)
-            })
-            .finally(() => {
-                setLoadingOwned(false)
-            })
-
+        if (password === '') {
+            toast.error('Enter Password!', {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+                transition: Bounce,
+            });
+        } else {
+            closeRemoveModal()
+            setLoadingOwned(true)
+            await removeFromLibrary(owned, password)
+                .then(response => {
+                    if (!response.data.success) {
+                        toast.warn(response.data.message, {
+                            position: "bottom-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "dark",
+                            transition: Bounce,
+                        });
+                    } else {
+                        setOwned(null)
+                        toast.success('Removed from WatchList!', {
+                            position: "bottom-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "dark",
+                            transition: Bounce,
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+                .finally(() => {
+                    setLoadingOwned(false)
+                })
+        }
     }
 
     return (
