@@ -40,13 +40,17 @@ export class TvsService {
 
       const query: any = {};
       if (filter.status) {
-          query.status = filter.status;
+        query.status = filter.status;
       }
       if (filter.type) {
-          query.type = filter.type;
+        query.type = filter.type;
       }
 
-      result.shows = await this.tvModel.find(query).skip(24 * (filter.page - 1)).limit(24);
+      result.shows = await this.tvModel
+        .find(query)
+        .sort({ _id: -1 })
+        .skip(24 * (filter.page - 1))
+        .limit(24);
       result.total_pages = (await this.tvModel.find(query).countDocuments()) / 24;
 
       result.total_pages = Math.floor(result.total_pages + 1)

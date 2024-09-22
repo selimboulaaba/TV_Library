@@ -4,10 +4,12 @@ import { getById, getTrailerById } from '../services/TMDB';
 import Poster from '../components/Poster';
 import Loading from '../components/Loading'
 import '../assets/css/addButton.css'
-import { addToLibrary, getShow, removeFromLibrary, updatePausedAt } from '../services/ShowService';
+import { addToLibrary, getShow, removeFromLibrary, updatePausedAt, updateStatus } from '../services/ShowService';
 import { Bounce, toast } from 'react-toastify';
 import ConfirmationPopUp from '../components/ConfirmationPopUp';
 import Spinner from '../components/Spinner';
+import DropDownSelect from '../components/DropDownSelect';
+import { CiCircleCheck, CiCircleMinus, CiCircleQuestion, CiCircleRemove, CiClock1 } from 'react-icons/ci';
 
 function Show() {
     const { id, type } = useParams();
@@ -30,6 +32,9 @@ function Show() {
     const [owned, setOwned] = useState(null)
     const [pausedAt, setPausedAt] = useState('')
     const [loadingPausedAt, setLoadingPausedAt] = useState(false)
+    const [status, setStatus] = useState(null)
+    const statuses = ["To Watch", "Watching", "Completed", "Waiting", "Dropped"]
+    const statusesEnum = ["TO_WATCH", "WATCHING", "COMPLETED", "WAITING", "DROPPED"]
 
     const fetchData = async () => {
         await getById(id, type)
@@ -42,6 +47,7 @@ function Show() {
             .then(response => {
                 setOwned(response.data._id)
                 setPausedAt(response.data.pauseAt)
+                setStatus(statuses[statusesEnum.indexOf(response.data.status)])
             })
         await getTrailerById(id, type)
             .then(response => {
@@ -231,9 +237,9 @@ function Show() {
             })
     }
 
-    const handleStatus = async () => {
-        setLoadingPausedAt(true)
-        await updatePausedAt(owned, pausedAt)
+    const handleStatus = async (newStatus) => {
+        setStatus(newStatus)
+        await updateStatus(owned, statusesEnum[statuses.indexOf(newStatus)])
             .then(response => {
                 if (!response.data.success) {
                     toast.warn(response.data.message, {
@@ -265,7 +271,6 @@ function Show() {
                 console.log(error)
             })
             .finally(() => {
-                setLoadingPausedAt(false)
             })
     }
 
@@ -276,6 +281,14 @@ function Show() {
                 : <div className='grid grid-cols-12 gap-3 pb-20'>
                     <div className='col-span-12 md:col-span-6 md:mr-10 p-1'>
                         <Poster src={show.poster_path} trailer={trailer?.key} />
+                        {owned && <div className='block: md:hidden w-[228px] mx-auto mt-5 relative flex items-center justify-center'>
+                            <DropDownSelect
+                                options={statuses}
+                                icons={[CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
+                                selected={status} setSelected={handleStatus}
+                            />
+                        </div>
+                        }
                     </div>
                     <div className='text-left col-span-12 md:col-start-7 md:col-span-6 md:pt-16 px-10 md:px-0 md:pr-4'>
                         <div className="block: md:hidden w-full">
@@ -296,18 +309,29 @@ function Show() {
                                 <div className="add-button-bottom"></div>
                                 <div className="add-button-base"></div>
                             </button>
+
                             {owned && type === 'TV_SERIE' && <div className="mt-5">
                                 <label htmlFor="watched-to-md" className="ml-3">Watched To:</label>
                                 <br />
                                 <form>
                                     <div className='mt-1 flex'>
                                         <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to-md' placeholder='Where to continue ?' className="py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
-                                        <button onClick={handlePausedAt} disabled={loadingPausedAt} className={`${loadingPausedAt && 'hover:bg-white active:border-2'} min-w-[75px] relative flex items-center justify-center hover:bg-gray-200 hover:text-black active:border focus bg-white py-2 px-3 border-2 border-b-gray-400 shadow-lg`}>
+                                        <button onClick={handlePausedAt} disabled={loadingPausedAt} className={`${loadingPausedAt && 'hover:bg-white active:border-2'} min-w-[75px] relative flex items-center justify-center hover:bg-gray-100 hover:text-black active:border bg-white py-2 px-3 border-2 border-b-gray-400 shadow-lg`}>
                                             {loadingPausedAt ? <Spinner /> : "Save"}
                                         </button>
                                     </div>
                                 </form>
-                            </div>}
+                            </div>
+                            }
+                            {owned && <div className='w-[228px] mt-5'>
+                                <label htmlFor="watched-to-md" className="ml-3">Watch Status:</label>
+                                <DropDownSelect
+                                    options={statuses}
+                                    icons={[CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
+                                    selected={status} setSelected={handleStatus}
+                                />
+                            </div>
+                            }
                         </div>
                     </div>
                     <div className='text-left md:text-center col-span-12 px-10 text-lg'>
@@ -340,7 +364,8 @@ function Show() {
                                     </button>
                                 </div>
                             </form>
-                        </div>}
+                        </div>
+                        }
                     </div>
                 </div>
             }

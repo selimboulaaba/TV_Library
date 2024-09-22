@@ -1,11 +1,6 @@
 import {
-    FiEdit,
     FiChevronDown,
 } from "react-icons/fi";
-import { BiCameraMovie } from "react-icons/bi";
-import { MdOutlineLiveTv } from "react-icons/md";
-import { PiFloppyDisk } from "react-icons/pi";
-
 import { motion } from "framer-motion";
 import { useState } from "react";
 
@@ -13,11 +8,11 @@ function DropDownSelect({ options, icons, selected, setSelected }) {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className="py-8 px-1 sm:px-2">
+        <div className={icons.length === 5 ? "pt-1 py-8 px-1 sm:px-2" : "py-8 px-1 sm:px-2"}>
             <motion.div animate={open ? "open" : "closed"} className="relative">
                 <button
                     onClick={() => setOpen((pv) => !pv)}
-                    className="flex items-center gap-2 px-5 sm:px-10 md:px-16 py-2 rounded-md text-indigo-50 bg-indigo-500 hover:bg-indigo-500 transition-colors"
+                    className={`${icons.length === 5 ? 'px-16' : 'px-5 sm:px-10 md:px-16'} flex items-center gap-2 py-2 rounded-md text-indigo-50 bg-indigo-500 hover:bg-indigo-500 transition-colors`}
                 >
                     <span className="font-medium text-sm">{selected || 'All'}</span>
                     <motion.span variants={iconVariants}>
@@ -29,7 +24,7 @@ function DropDownSelect({ options, icons, selected, setSelected }) {
                     initial={wrapperVariants.closed}
                     variants={wrapperVariants}
                     style={{ originY: "top", translateX: "-50%" }}
-                    className="z-40 flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] left-[50%] w-32 md:w-48 overflow-hidden"
+                    className={`${icons.length === 5 ? 'w-48' : 'w-32 md:w-48'} z-40 flex flex-col gap-2 p-2 rounded-lg bg-white shadow-xl absolute top-[120%] left-[50%] overflow-hidden`}
                 >
                     {options.map((option, index) => (
                         <Option key={index} setOpen={setOpen} Icon={icons[index]} text={option} setSelected={setSelected} />
