@@ -122,6 +122,7 @@ function Show() {
                             transition: Bounce,
                         });
                     } else {
+                        setStatus(statuses[statusesEnum.indexOf(response.data.show.status)])
                         setOwned(response.data.show._id)
                         toast.success('Added to WatchList!', {
                             position: "bottom-center",
@@ -348,7 +349,7 @@ function Show() {
                                 <div className='font-bold text-[#6e452a]'>Seasons:</div>
                                 {show.seasons.map((season, index) => (
                                     <div key={index} className='text-[16px]'>
-                                        {"- " + season.name + ": " + season.episode_count + " episodes"}
+                                        {"- " + season.name + " ("+season.air_date+"): " + season.episode_count + " episodes"}
                                     </div>
                                 ))}
                             </>
