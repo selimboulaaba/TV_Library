@@ -4,7 +4,6 @@ import { getSearch } from '../services/TMDB'
 import Paginator from '../components/Paginator'
 import Loading from '../components/Loading'
 import TiltedPoster from '../components/TiltedPoster'
-import '../assets/css/Search.css'
 import NoResults from '../components/NoResults'
 import { Link } from 'react-router-dom'
 

@@ -8,7 +8,7 @@ function DropDownSelect({ options, icons, selected, setSelected }) {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className={icons.length === 5 ? "pt-1 py-8 px-1 sm:px-2" : "py-8 px-1 sm:px-2"}>
+        <div className={icons.length === 5 ? "pt-1 py-8 px-1 sm:px-2" : "pb-8 sm:py-8 px-1 sm:px-2"}>
             <motion.div animate={open ? "open" : "closed"} className="relative">
                 <button
                     onClick={() => setOpen((pv) => !pv)}

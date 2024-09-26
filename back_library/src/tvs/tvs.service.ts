@@ -39,6 +39,8 @@ export class TvsService {
       const result = { shows: [], total_pages: 0 }
 
       const query: any = {};
+      query.title = { $regex: filter.title, $options: 'i' };
+      
       if (filter.status) {
         query.status = filter.status;
       }

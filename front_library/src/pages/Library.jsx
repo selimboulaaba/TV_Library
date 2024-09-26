@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import DropDownSelect from '../components/DropDownSelect'
 import { getShows } from '../services/ShowService'
 import Loading from '../components/Loading'
@@ -15,6 +15,7 @@ import { CiCircleMore } from "react-icons/ci";
 import { CiCircleQuestion } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
 import { CiClock1 } from "react-icons/ci";
+import SeachInput from '../components/SeachInput'
 
 function Library() {
     const [type, setType] = useState(null)
@@ -27,9 +28,17 @@ function Library() {
     const statusesEnum = [null, "TO_WATCH", "WATCHING", "COMPLETED", "WAITING", "DROPPED"]
     const types = [null, "Movie", "Tv"]
     const typesEnum = [null, "MOVIE", "TV_SERIE"]
+    const [title, setTitle] = useState("")
+    const controllerRef = useRef();
 
-    const fetchData = async (type, currentPage, status) => {
-        await getShows((typesEnum[types.indexOf(type)]), currentPage, (statusesEnum[statuses.indexOf(status)]))
+    const fetchData = async (type, currentPage, status, title) => {
+        if (controllerRef.current) {
+            controllerRef.current.abort();
+        }
+        controllerRef.current = new AbortController();
+        const signal = controllerRef.current.signal;
+        
+        await getShows((typesEnum[types.indexOf(type)]), currentPage, (statusesEnum[statuses.indexOf(status)]), title, signal)
             .then(response => {
                 setShows(response.data.shows)
                 setTotalPages(response.data.total_pages)
@@ -44,22 +53,27 @@ function Library() {
 
     useEffect(() => {
         setLoading(true)
-        fetchData(type, currentPage, status);
-    }, [type, currentPage, status])
+        fetchData(type, currentPage, status, title);
+    }, [type, currentPage, status, title])
 
     return (
         <div className='mt-[50px]'>
-            <div className="flex items-center justify-center">
-                <DropDownSelect
-                    options={types}
-                    icons={[PiFloppyDisk, BiCameraMovie, MdOutlineLiveTv]}
-                    selected={type} setSelected={setType}
-                />
-                <DropDownSelect
-                    options={statuses}
-                    icons={[CiCircleMore, CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
-                    selected={status} setSelected={setStatus}
-                />
+            <div className='sm:flex items-center justify-center'>
+                <div className="flex items-center justify-center">
+                    <SeachInput value={title} setValue={setTitle} />
+                </div>
+                <div className="flex items-center justify-center">
+                    <DropDownSelect
+                        options={types}
+                        icons={[PiFloppyDisk, BiCameraMovie, MdOutlineLiveTv]}
+                        selected={type} setSelected={setType}
+                    />
+                    <DropDownSelect
+                        options={statuses}
+                        icons={[CiCircleMore, CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
+                        selected={status} setSelected={setStatus}
+                    />
+                </div>
             </div>
 
             {loading

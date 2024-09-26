@@ -5,4 +5,5 @@ export class FilterTvDto {
     type: TvType;
     page: number;
     status: TvStatus;
+    title: string;
 }
