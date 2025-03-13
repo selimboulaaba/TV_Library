@@ -8,4 +8,5 @@ export class CreateTvDto {
     date: string;
     type: TvType;
     tmdbId: number;
+    userId: number
 }

@@ -4,6 +4,8 @@ import { CreateTvDto } from './dto/create-tv.dto';
 import { UpdateTvDto } from './dto/update-tv.dto';
 import { FilterTvDto } from './dto/filter-tv.dto';
 import { TvType } from './entities/tv.type.enum';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUserDto } from './dto/login.dto';
 
 @Controller('tvs')
 export class TvsController {
@@ -34,8 +36,18 @@ export class TvsController {
     return this.tvsService.updateStatus(id, updatePausedAt.status);
   }
 
-  @Delete(':id/:password')
-  remove(@Param('id') id: string, @Param('password') password: string) {
+  @Delete(':id')
+  remove(@Param('id') id: string) {
     return this.tvsService.remove(id);
+  }
+
+  @Post('/register')
+  createUser(@Body() createUserDto: CreateUserDto) {
+    return this.tvsService.createUser(createUserDto);
+  }
+
+  @Post('/login')
+  loginUser(@Body() loginUserDto: LoginUserDto) {
+    return this.tvsService.login(loginUserDto);
   }
 }

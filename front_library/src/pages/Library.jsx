@@ -37,8 +37,8 @@ function Library() {
         }
         controllerRef.current = new AbortController();
         const signal = controllerRef.current.signal;
-        
-        await getShows((typesEnum[types.indexOf(type)]), currentPage, (statusesEnum[statuses.indexOf(status)]), title, signal)
+        const user = localStorage.getItem('user')
+        await getShows((typesEnum[types.indexOf(type)]), currentPage, (statusesEnum[statuses.indexOf(status)]), title, signal, user)
             .then(response => {
                 setShows(response.data.shows)
                 setTotalPages(response.data.total_pages)

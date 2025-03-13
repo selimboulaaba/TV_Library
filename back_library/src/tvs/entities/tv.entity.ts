@@ -12,6 +12,7 @@ export const tvSchema = new mongoose.Schema({
     tmdbId: { type: Number, required: true },
     pauseAt: { type: String, required: false, default: '' },
     status: { type: String, required: false, enum: Object.values(TvStatus), default: TvStatus.TO_WATCH },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 export interface Tv extends Document {
@@ -24,4 +25,5 @@ export interface Tv extends Document {
     tmdbId: number;
     pauseAt: string;
     status: TvStatus;
+    userId: mongoose.Schema.Types.ObjectId;
 }

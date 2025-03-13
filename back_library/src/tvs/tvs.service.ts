@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTvDto } from './dto/create-tv.dto';
-import { UpdateTvDto } from './dto/update-tv.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Tv } from './entities/tv.entity';
 import { FilterTvDto } from './dto/filter-tv.dto';
 import { TvStatus } from './entities/tv.status.enum';
 import { TvType } from './entities/tv.type.enum';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUserDto } from './dto/login.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class TvsService {
-  constructor(@InjectModel('Tv') private readonly tvModel: Model<Tv>) { }
+  constructor(@InjectModel('Tv') private readonly tvModel: Model<Tv>, @InjectModel('User') private readonly userModel: Model<User>) { }
 
   async create(createTvDto: CreateTvDto) {
     try {
@@ -46,6 +48,9 @@ export class TvsService {
       }
       if (filter.type) {
         query.type = filter.type;
+      }
+      if (filter.userId) {
+        query.userId = filter.userId;
       }
 
       result.shows = await this.tvModel
@@ -99,6 +104,30 @@ export class TvsService {
       }
     } catch (error) {
       return error;
+    }
+  }
+
+  async createUser(createUserDto: CreateUserDto) {
+    try {
+        const createdTv = await new this.userModel(createUserDto).save();
+        return { success: true };
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async login(loginUserDto: LoginUserDto) {
+    try {
+      const user = await this.userModel.findOne({ username: loginUserDto.username });
+      if (!user) {
+        return { success: false, message: 'Wrong Credentials!' };
+      }
+      if (user.password !== loginUserDto.password) {
+        return { success: false, message: 'Wrong Credentials!' };
+      }
+      return { success: true, data: user };
+    } catch (error) {
+      return { error: error.message };
     }
   }
 }
