@@ -37,7 +37,7 @@ export class TvsService {
   async findAll(filter: FilterTvDto) {
     try {
       const result = { shows: [], total_pages: 0 }
-
+  
       const query: any = {};
       query.title = { $regex: filter.title, $options: 'i' };
       
@@ -47,16 +47,30 @@ export class TvsService {
       if (filter.type) {
         query.type = filter.type;
       }
+  
+      const aggregationPipeline = [
+        { $match: query },
+        { 
+          $addFields: {
+            sortOrder: { 
+              $cond: { 
+                if: { $eq: ["$status", "COMPLETED"] }, 
+                then: 1, 
+                else: 0 
+              } 
+            }
+          } 
+        },
+        { $sort: { sortOrder: 1, _id: -1 } },
+        { $skip: 24 * (filter.page - 1) },
+        { $limit: 24 },
+        { $project: { sortOrder: 0 } }
+      ] as any[];
+  
+      result.shows = await this.tvModel.aggregate(aggregationPipeline);
 
-      result.shows = await this.tvModel
-        .find(query)
-        .sort({ _id: -1 })
-        .skip(24 * (filter.page - 1))
-        .limit(24);
-      result.total_pages = (await this.tvModel.find(query).countDocuments()) / 24;
-
-      result.total_pages = Math.floor(result.total_pages + 1)
-
+      result.total_pages = Math.ceil((await this.tvModel.find(query).countDocuments()) / 24);
+  
       return result
     } catch (error) {
       return error;

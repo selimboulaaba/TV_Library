@@ -52,26 +52,52 @@ function Library() {
     }
 
     useEffect(() => {
-        setLoading(true)
         fetchData(type, currentPage, status, title);
-    }, [type, currentPage, status, title])
+    }, [])
+
+    const handleSetType = (newType) => {
+        setLoading(true)
+        setType(newType);
+        setCurrentPage(1);
+        fetchData(newType, 1, status, title);
+    }
+
+    const handleSetStatus = (newStatus) => {
+        setLoading(true)
+        setStatus(newStatus);
+        setCurrentPage(1);
+        fetchData(type, 1, newStatus, title);
+    }
+
+    const handleSetTitle = (newTitle) => {
+        setLoading(true)
+        setTitle(newTitle);
+        setCurrentPage(1);
+        fetchData(type, 1, status, newTitle);
+    }
+
+    const handleSetCurrentTitle = (newCurrentPage) => {
+        setLoading(true)
+        setCurrentPage(newCurrentPage);
+        fetchData(type, newCurrentPage, status, title);
+    }
 
     return (
         <div className='mt-[50px]'>
             <div className='sm:flex items-center justify-center'>
                 <div className="flex items-center justify-center">
-                    <SeachInput value={title} setValue={setTitle} />
+                    <SeachInput value={title} setValue={handleSetTitle} />
                 </div>
                 <div className="flex items-center justify-center">
                     <DropDownSelect
                         options={types}
                         icons={[PiFloppyDisk, BiCameraMovie, MdOutlineLiveTv]}
-                        selected={type} setSelected={setType}
+                        selected={type} setSelected={handleSetType}
                     />
                     <DropDownSelect
                         options={statuses}
                         icons={[CiCircleMore, CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
-                        selected={status} setSelected={setStatus}
+                        selected={status} setSelected={handleSetStatus}
                     />
                 </div>
             </div>
@@ -90,7 +116,7 @@ function Library() {
                             ))}
                         </div>
                         <div className='grid gap-3 justify-items-center pb-10 mt-[70px]'>
-                            <Paginator totalPages={totalPages} currentPage={currentPage} fetchData={setCurrentPage} />
+                            <Paginator totalPages={totalPages} currentPage={currentPage} fetchData={handleSetCurrentTitle} />
                         </div>
                     </>
                     : <NoResults />
