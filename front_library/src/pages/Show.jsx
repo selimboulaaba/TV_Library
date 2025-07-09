@@ -6,7 +6,6 @@ import Loading from '../components/Loading'
 import '../assets/css/addButton.css'
 import { addToLibrary, getShow, removeFromLibrary, updatePausedAt, updateStatus } from '../services/ShowService';
 import { Bounce, toast } from 'react-toastify';
-import ConfirmationPopUp from '../components/ConfirmationPopUp';
 import Spinner from '../components/Spinner';
 import DropDownSelect from '../components/DropDownSelect';
 import { CiCircleCheck, CiCircleMinus, CiCircleQuestion, CiCircleRemove, CiClock1 } from 'react-icons/ci';
@@ -18,17 +17,7 @@ function Show() {
     const [loading, setLoading] = useState(true)
     const [showMore, setShowMore] = useState(false)
     const [loadingOwned, setLoadingOwned] = useState(false)
-    const [addModalOpen, setAddModalOpen] = useState(false);
-    const closeAddModal = () => {
-        setAddModalOpen(false);
-        setPassword('')
-    }
-    const [removeModalOpen, setRemoveModalOpen] = useState(false);
-    const closeRemoveModal = () => {
-        setRemoveModalOpen(false);
-        setPassword('')
-    }
-    const [password, setPassword] = useState('');
+
     const [owned, setOwned] = useState(null)
     const [pausedAt, setPausedAt] = useState('')
     const [loadingPausedAt, setLoadingPausedAt] = useState(false)
@@ -69,35 +58,15 @@ function Show() {
         }
     }, [])
 
-    const addShow = () => {
-        setAddModalOpen(true)
-    }
-
-    const removeShow = () => {
-        setRemoveModalOpen(true)
-    }
-
     const toggleShowMore = () => {
         setShowMore(!showMore)
     }
 
     const add = async () => {
-        if (password === '') {
-            toast.error('Enter Password!', {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-                transition: Bounce,
-            });
-        } else {
-            closeAddModal()
             setLoadingOwned(true)
             const payload = {};
+            const user = localStorage.getItem('user')
+
             payload.title = show.title ? show.title : show.name
             payload.description = show.overview
             payload.poster = show.poster_path
@@ -105,8 +74,9 @@ function Show() {
             payload.type = type
             payload.genre = show.genres.map(genre => genre.name)
             payload.tmdbId = show.id
-            payload.password = password
+            payload.userId = user
 
+            
             await addToLibrary(payload)
                 .then(response => {
                     if (!response.data.success) {
@@ -143,26 +113,11 @@ function Show() {
                 .finally(() => {
                     setLoadingOwned(false)
                 })
-        }
     }
 
     const remove = async () => {
-        if (password === '') {
-            toast.error('Enter Password!', {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-                transition: Bounce,
-            });
-        } else {
-            closeRemoveModal()
             setLoadingOwned(true)
-            await removeFromLibrary(owned, password)
+            await removeFromLibrary(owned)
                 .then(response => {
                     if (!response.data.success) {
                         toast.warn(response.data.message, {
@@ -197,7 +152,6 @@ function Show() {
                 .finally(() => {
                     setLoadingOwned(false)
                 })
-        }
     }
 
     const handlePausedAt = async () => {
@@ -293,7 +247,7 @@ function Show() {
                     </div>
                     <div className='text-left col-span-12 md:col-start-7 md:col-span-6 md:pt-16 px-10 md:px-0 md:pr-4'>
                         <div className="block: md:hidden w-full">
-                            <button className="add-button mx-auto mt-5 mb-5 w-full" disabled={loadingOwned} onClick={() => owned ? removeShow() : addShow()}>
+                            <button className="add-button mx-auto mt-5 mb-5 w-full" disabled={loadingOwned} onClick={() => owned ? remove() : add()}>
                                 <div className="add-button-top">{loadingOwned ? 'Loading' : owned ? 'Remove' : 'ADD'}</div>
                                 <div className="add-button-bottom"></div>
                                 <div className="add-button-base"></div>
@@ -305,7 +259,7 @@ function Show() {
                         <h1 className={`md:pr-[10vw] xl:pr-[20vw]  ${showMore ? '' : 'line-clamp-4'}`}>{show.overview}</h1>
                         <strong className='hover: cursor-pointer hover:underline' onClick={toggleShowMore}>{showMore ? 'Show Less' : 'Show More'}</strong>
                         <div className="hidden md:block w-full">
-                            <button className="add-button mx-auto mt-5" disabled={loadingOwned} onClick={() => owned ? removeShow() : addShow()}>
+                            <button className="add-button mx-auto mt-5" disabled={loadingOwned} onClick={() => owned ? remove() : add()}>
                                 <div className="add-button-top">{loadingOwned ? 'Loading' : owned ? 'Remove' : 'ADD'}</div>
                                 <div className="add-button-bottom"></div>
                                 <div className="add-button-base"></div>
@@ -370,8 +324,6 @@ function Show() {
                     </div>
                 </div>
             }
-            <ConfirmationPopUp open={addModalOpen} closeModal={closeAddModal} password={password} setPassword={setPassword} accept={add} />
-            <ConfirmationPopUp open={removeModalOpen} closeModal={closeRemoveModal} password={password} setPassword={setPassword} accept={remove} />
         </div>
     )
 }

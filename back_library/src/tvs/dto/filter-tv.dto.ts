@@ -6,4 +6,5 @@ export class FilterTvDto {
     page: number;
     status: TvStatus;
     title: string;
+    userId: string
 }

@@ -3,20 +3,12 @@ import { TvsService } from './tvs.service';
 import { TvsController } from './tvs.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { tvSchema } from './entities/tv.entity';
-import { ConfirmationMiddleware } from '../middlewares/confirmation/confirmation.middleware';
+import { userSchema } from './entities/user.entity';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Tv', schema: tvSchema }])],
+  imports: [MongooseModule.forFeature([{ name: 'Tv', schema: tvSchema }, { name: 'User', schema: userSchema }])],
   controllers: [TvsController],
   providers: [TvsService],
 })
 export class TvsModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ConfirmationMiddleware)
-      .forRoutes(
-        { path: 'tvs', method: RequestMethod.POST },
-        { path: 'tvs/:id/:password', method: RequestMethod.DELETE }
-      );
-  }
 }

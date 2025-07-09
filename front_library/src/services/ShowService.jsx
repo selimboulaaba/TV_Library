@@ -6,16 +6,16 @@ export const addToLibrary = async (payload) => {
     return await axios.post(url, payload)
 }
 
-export const getShows = async (type, page, status, title, signal) => {
-    return await axios.post(url + "/paginate", { type, page, status, title }, { signal })
+export const getShows = async (type, page, status, title, signal, userId) => {
+    return await axios.post(url + "/paginate", { type, page, status, title, userId }, { signal })
 }
 
 export const getShow = async (id, type) => {
     return await axios.get(url + "/tmdb/" + id + "/" + type)
 }
 
-export const removeFromLibrary = async (id, password) => {
-    return await axios.delete(url + "/" + id + "/" + password)
+export const removeFromLibrary = async (id) => {
+    return await axios.delete(url + "/" + id)
 }
 
 export const updatePausedAt = async (id, pauseAt) => {

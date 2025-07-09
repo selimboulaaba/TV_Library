@@ -1,8 +1,32 @@
 import React from 'react'
 import '../assets/css/NavBar.css'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Bounce, toast } from 'react-toastify';
 
 function NavBar() {
+    const user = localStorage.getItem('user')
+    const navigate = useNavigate();
+
+    const signout = () => {
+        localStorage.removeItem('user')
+        navigate('/login')
+        toast.success('Logged out!', {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+        });
+    }
+
+    if (!user || user === "") {
+        return <></>
+    }
+
     return (
         <div className="button-container">
             <Link to='/' >
@@ -45,7 +69,7 @@ function NavBar() {
                     </svg>
                 </button>
             </Link>
-            {/* <button className="button">
+            <button className="button" onClick={() => signout()}>
                 <svg
                     className="icon"
                     stroke="currentColor"
@@ -56,32 +80,9 @@ function NavBar() {
                     width="1em"
                     xmlns="http://www.w3.org/2000/svg"
                 >
-                    <path
-                        d="M12 2.5a5.5 5.5 0 0 1 3.096 10.047 9.005 9.005 0 0 1 5.9 8.181.75.75 0 1 1-1.499.044 7.5 7.5 0 0 0-14.993 0 .75.75 0 0 1-1.5-.045 9.005 9.005 0 0 1 5.9-8.18A5.5 5.5 0 0 1 12 2.5ZM8 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"
-                    ></path>
+                    <path d="M16 13v-2H7V9l-5 3 5 3v-2h9zm3-11H5c-1.1 0-2 .9-2 2v4h2V4h14v16H5v-4H3v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path>
                 </svg>
             </button>
-
-            <button className="button">
-                <svg
-                    className="icon"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    height="1em"
-                    width="1em"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path
-                        d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
-                    ></path>
-                </svg>
-            </button> */}
         </div>
     );
 };
