@@ -1,11 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import '../assets/css/SearchInput.css'
 
 function SeachInput({ value, setValue }) {
+    const [debouncedSearch, setDebouncedValue] = useState(value);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setValue(debouncedSearch);
+        }, 500);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [debouncedSearch]);
+
     return (
         <form onSubmit={event => event.preventDefault()} className='pt-5 pb-3 sm:py-0 mr-0 sm:mr-5'>
             <div className="search_container">
-                <input type="text" value={value} onChange={event => setValue(event.target.value)} name="text" className="search_input" placeholder="Type to search..." />
+                <input type="text" value={debouncedSearch} onChange={event => setDebouncedValue(event.target.value)} name="text" className="search_input" placeholder="Type to search..." />
                 <div className="search_icon">
                     <svg xmlns="http://www.w3.org/2000/svg" className="search_ionicon" viewBox="0 0 512 512">
                         <title>Search</title>
