@@ -56,7 +56,7 @@ function AddLibrary() {
                 </button>
             </form>
             {loading
-                ? <Loading />
+                ? <Loading min_h={"60"} />
                 : <>
                     <div className='grid grid-cols-12 gap-3 p-5'>
                         {list?.length != 0 && list?.map(object => (

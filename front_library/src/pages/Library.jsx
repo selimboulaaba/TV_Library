@@ -103,7 +103,7 @@ function Library() {
             </div>
 
             {loading
-                ? <Loading />
+                ? <Loading min_h={"60"} />
                 : shows.length !== 0
                     ? <>
                         <div className='grid grid-cols-12 gap-3 p-5'>

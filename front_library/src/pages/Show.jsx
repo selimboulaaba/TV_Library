@@ -232,7 +232,7 @@ function Show() {
     return (
         <div className='mt-[70px] text-center'>
             {loading
-                ? <Loading />
+                ? <Loading min_h={"80"} />
                 : <div className='grid grid-cols-12 gap-3 pb-20'>
                     <div className='col-span-12 md:col-span-6 md:mr-10 p-1'>
                         <Poster src={show.poster_path} trailer={trailer?.key} />
