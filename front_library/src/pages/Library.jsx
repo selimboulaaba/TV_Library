@@ -42,12 +42,12 @@ function Library() {
             .then(response => {
                 setShows(response.data.shows)
                 setTotalPages(response.data.total_pages)
+                setLoading(false)
             })
             .catch((error) => {
                 console.log(error)
-            })
-            .finally(() => {
-                setLoading(false)
+                if (error.code !== "ERR_CANCELED")
+                    setLoading(false)
             })
     }
 
