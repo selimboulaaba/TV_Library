@@ -6,7 +6,9 @@ function SeachInput({ value, setValue }) {
 
     useEffect(() => {
         const handler = setTimeout(() => {
-            setValue(debouncedSearch);
+            if (debouncedSearch !== value) {
+                setValue(debouncedSearch);
+            }
         }, 500);
 
         return () => {
