@@ -83,44 +83,61 @@ function Library() {
     }
 
     return (
-        <div className='mt-[50px]'>
-            <div className='sm:flex items-center justify-center'>
-                <div className="flex items-center justify-center">
-                    <SeachInput value={title} setValue={handleSetTitle} />
-                </div>
-                <div className="flex items-center justify-center">
-                    <DropDownSelect
-                        options={types}
-                        icons={[PiFloppyDisk, BiCameraMovie, MdOutlineLiveTv]}
-                        selected={type} setSelected={handleSetType}
-                    />
-                    <DropDownSelect
-                        options={statuses}
-                        icons={[CiCircleMore, CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
-                        selected={status} setSelected={handleSetStatus}
-                    />
+        <div className='min-h-screen pb-20'>
+            {/* Hero Section */}
+            <div className="w-full bg-slate-50 border-b border-slate-200 pt-8 pb-6 px-4">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="text-center md:text-left">
+                        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Your Collection</h1>
+                        <p className="text-slate-500 mt-1">Manage and track your customized library</p>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+                        <div className="w-full sm:w-auto flex justify-center">
+                            <SeachInput value={title} setValue={handleSetTitle} />
+                        </div>
+                        <div className="flex w-full sm:w-auto items-center justify-center gap-2">
+                            <div className="flex-1 sm:flex-none">
+                                <DropDownSelect
+                                    options={types}
+                                    icons={[PiFloppyDisk, BiCameraMovie, MdOutlineLiveTv]}
+                                    selected={type} setSelected={handleSetType}
+                                />
+                            </div>
+                            <div className="flex-1 sm:flex-none">
+                                <DropDownSelect
+                                    options={statuses}
+                                    icons={[CiCircleMore, CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
+                                    selected={status} setSelected={handleSetStatus}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {loading
-                ? <Loading min_h={"60"} />
-                : shows.length !== 0
-                    ? <>
-                        <div className='grid grid-cols-12 gap-3 p-5'>
-                            {shows?.map(show => (
-                                <div className="col-span-6 md:col-span-3 lg:col-span-2 grid w-full place-content-center" key={show._id}>
-                                    <Link to={`/${show.type}/${show.tmdbId}`}>
-                                        <TiltedPoster src={"https://image.tmdb.org/t/p/w500" + show.poster} title={show.title} />
-                                    </Link>
-                                </div>
-                            ))}
-                        </div>
-                        <div className='grid gap-3 justify-items-center pb-10 mt-[70px]'>
-                            <Paginator totalPages={totalPages} currentPage={currentPage} fetchData={handleSetCurrentTitle} />
-                        </div>
-                    </>
-                    : <NoResults />
-            }
+            {/* Grid Section */}
+            <div className="max-w-7xl mx-auto mt-8 px-4">
+                {loading
+                    ? <Loading min_h={"60"} />
+                    : shows.length !== 0
+                        ? <>
+                            <div className='grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6'>
+                                {shows?.map(show => (
+                                    <div className="w-full relative" key={show._id}>
+                                        <Link to={`/${show.type}/${show.tmdbId}`} className="block block w-full shadow-md rounded-lg overflow-hidden border border-slate-200">
+                                            <TiltedPoster src={"https://image.tmdb.org/t/p/w500" + show.poster} title={show.title} />
+                                        </Link>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className='flex justify-center pt-14 pb-8'>
+                                <Paginator totalPages={totalPages} currentPage={currentPage} fetchData={handleSetCurrentTitle} />
+                            </div>
+                        </>
+                        : <NoResults />
+                }
+            </div>
         </div>
     )
 }

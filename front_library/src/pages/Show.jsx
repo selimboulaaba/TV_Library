@@ -230,100 +230,136 @@ function Show() {
     }
 
     return (
-        <div className='mt-[70px] text-center'>
-            {loading
-                ? <Loading min_h={"80"} />
-                : <div className='grid grid-cols-12 gap-3 pb-20'>
-                    <div className='col-span-12 md:col-span-6 md:mr-10 p-1'>
-                        <Poster src={show.poster_path} trailer={trailer?.key} />
-                        {owned && <div className='block: md:hidden w-[228px] mx-auto mt-5 relative flex items-center justify-center'>
-                            <DropDownSelect
-                                options={statuses}
-                                icons={[CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
-                                selected={status} setSelected={handleStatus}
-                            />
-                        </div>
-                        }
+        <div className='min-h-screen pb-20 bg-slate-50'>
+            {loading ? (
+                <div className="pt-20"><Loading min_h={"80"} /></div>
+            ) : (
+                <>
+                    {/* Cinematic Backdrop Header */}
+                    <div className="relative w-full h-[40vh] min-h-[300px] md:h-[55vh]">
+                        <div 
+                            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                            style={{ 
+                                backgroundImage: `url('https://image.tmdb.org/t/p/original${show.backdrop_path || show.poster_path}')`,
+                            }}
+                        ></div>
+                        {/* Gradient overlays */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-slate-50/70 to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-slate-50/80 via-slate-50/30 to-transparent"></div>
                     </div>
-                    <div className='text-left col-span-12 md:col-start-7 md:col-span-6 md:pt-16 px-10 md:px-0 md:pr-4'>
-                        <div className="block: md:hidden w-full">
-                            <button className="add-button mx-auto mt-5 mb-5 w-full" disabled={loadingOwned} onClick={() => owned ? remove() : add()}>
-                                <div className="add-button-top">{loadingOwned ? 'Loading' : owned ? 'Remove' : 'ADD'}</div>
-                                <div className="add-button-bottom"></div>
-                                <div className="add-button-base"></div>
-                            </button>
-                        </div>
 
-                        <h1 className='font-bold text-3xl text-[#6e452a] mb-5'>{show.title ? show.title : show.name}</h1>
+                    {/* Main Content Area — overlaps backdrop */}
+                    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-28 md:-mt-40 relative z-10'>
+                        {/* Two-column row: poster left, content right */}
+                        <div className='flex flex-col md:flex-row gap-6 md:gap-8 items-start'>
 
-                        <h1 className={`md:pr-[10vw] xl:pr-[20vw]  ${showMore ? '' : 'line-clamp-4'}`}>{show.overview}</h1>
-                        <strong className='hover: cursor-pointer hover:underline' onClick={toggleShowMore}>{showMore ? 'Show Less' : 'Show More'}</strong>
-                        <div className="hidden md:block w-full">
-                            <button className="add-button mx-auto mt-5" disabled={loadingOwned} onClick={() => owned ? remove() : add()}>
-                                <div className="add-button-top">{loadingOwned ? 'Loading' : owned ? 'Remove' : 'ADD'}</div>
-                                <div className="add-button-bottom"></div>
-                                <div className="add-button-base"></div>
-                            </button>
-
-                            {owned && type === 'TV_SERIE' && <div className="mt-5">
-                                <label htmlFor="watched-to-md" className="ml-3">Watched To:</label>
-                                <br />
-                                <form>
-                                    <div className='mt-1 flex'>
-                                        <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to-md' placeholder='Where to continue ?' className="py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
-                                        <button onClick={handlePausedAt} disabled={loadingPausedAt} className={`${loadingPausedAt && 'hover:bg-white active:border-2'} min-w-[75px] relative flex items-center justify-center hover:bg-gray-100 hover:text-black active:border bg-white py-2 px-3 border-2 border-b-gray-400 shadow-lg`}>
-                                            {loadingPausedAt ? <Spinner /> : "Save"}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                            }
-                            {owned && <div className='w-[228px] mt-5'>
-                                <label htmlFor="watched-to-md" className="ml-3">Watch Status:</label>
-                                <DropDownSelect
-                                    options={statuses}
-                                    icons={[CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
-                                    selected={status} setSelected={handleStatus}
-                                />
-                            </div>
-                            }
-                        </div>
-                    </div>
-                    <div className='text-left md:text-center col-span-12 px-10 text-lg'>
-                        <div className='font-bold text-[#6e452a]'>Release Date:</div>
-                        <div className='text-[16px]'>{(type === 'MOVIE') ? show.release_date : show.first_air_date}</div>
-                        <div className='font-bold text-[#6e452a]'>Genre:</div>
-                        <div className='text-[16px]'>
-                            {show.genres.map((genre, index) => (
-                                genre.name + (index !== show.genres.length - 1 ? ', ' : '')
-                            ))}
-                        </div>
-                        {type === 'TV_SERIE' &&
-                            <>
-                                <div className='font-bold text-[#6e452a]'>Seasons:</div>
-                                {show.seasons.map((season, index) => (
-                                    <div key={index} className='text-[16px]'>
-                                        {"- " + season.name + " ("+season.air_date+"): " + season.episode_count + " episodes"}
-                                    </div>
-                                ))}
-                            </>
-                        }
-                        {owned && type === 'TV_SERIE' && <div className="block md:hidden">
-                            <label htmlFor="watched-to-sm" className="font-bold text-[#6e452a]">Watched To:</label>
-                            <br />
-                            <form>
-                                <div className='mt-1 flex w-full sm:w-[70%]'>
-                                    <input value={pausedAt || ''} onChange={(event) => setPausedAt(event.target.value)} type="text" id='watched-to-sm' placeholder='Where to continue ?' className="w-[70%] py-2 px-3 border-2 border-r-0 border-b-gray-400 focus:outline-none shadow-lg" />
-                                    <button onClick={handlePausedAt} disabled={loadingPausedAt} className={`${loadingPausedAt && 'hover:bg-white active:border-2'} w-[30%] min-w-[75px] relative flex items-center justify-center hover:bg-gray-200 hover:text-black active:border focus bg-white py-2 px-3 border-2 border-b-gray-400 shadow-lg`}>
-                                        {loadingPausedAt ? <Spinner /> : "Save"}
-                                    </button>
+                            {/* ── LEFT COLUMN: Poster ── */}
+                            <div className='shrink-0 self-center md:self-start w-36 sm:w-44 md:w-52 lg:w-64'>
+                                <div className="shadow-2xl rounded-xl overflow-hidden">
+                                    <Poster src={show.poster_path} trailer={trailer?.key} />
                                 </div>
-                            </form>
-                        </div>
-                        }
-                    </div>
-                </div>
-            }
+                            </div>
+
+                            {/* ── RIGHT COLUMN: All info ── */}
+                            <div className='flex-1 min-w-0 pt-2 md:pt-10 relative z-20'>
+
+                                {/* Title */}
+                                <h1 className='font-extrabold text-3xl sm:text-4xl lg:text-5xl text-slate-900 tracking-tight leading-tight'>
+                                    {show.title || show.name}
+                                </h1>
+
+                                {/* Year + Genres */}
+                                <div className="flex flex-wrap items-center gap-2 mt-3 text-sm font-medium">
+                                    <span className="px-3 py-1 bg-slate-200 rounded-full border border-slate-300 text-slate-700">
+                                        {(type === 'MOVIE') ? show.release_date?.substring(0,4) : show.first_air_date?.substring(0,4)}
+                                    </span>
+                                    {show.genres?.map(g => (
+                                        <span key={g.id} className="px-3 py-1 bg-indigo-50 rounded-full border border-indigo-200 text-indigo-600">
+                                            {g.name}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                {/* ── ACTION BAR ── */}
+                                <div className="mt-6 flex flex-wrap items-center gap-3">
+                                    <button 
+                                        className={`px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all duration-200 text-sm shadow-lg ${
+                                            owned 
+                                            ? 'bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200' 
+                                            : 'bg-indigo-600 text-white hover:bg-indigo-500 hover:shadow-indigo-300'
+                                        }`}
+                                        disabled={loadingOwned} 
+                                        onClick={() => owned ? remove() : add()}
+                                    >
+                                        {loadingOwned ? <Spinner /> : owned ? 'Remove from Library' : '+ Add to Library'}
+                                    </button>
+
+                                    {owned && (
+                                        <div className="w-44 relative z-30">
+                                            <DropDownSelect
+                                                options={statuses}
+                                                icons={[CiClock1, CiCircleMinus, CiCircleCheck, CiCircleQuestion, CiCircleRemove]}
+                                                selected={status} setSelected={handleStatus}
+                                            />
+                                        </div>
+                                    )}
+
+                                    {owned && type === 'TV_SERIE' && (
+                                        <div className='flex gap-2 flex-1 min-w-[200px] max-w-xs'>
+                                            <input 
+                                                value={pausedAt || ''} 
+                                                onChange={(e) => setPausedAt(e.target.value)} 
+                                                type="text" 
+                                                placeholder='Paused at: S01E01' 
+                                                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm" 
+                                            />
+                                            <button 
+                                                onClick={handlePausedAt} 
+                                                disabled={loadingPausedAt} 
+                                                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-50 flex items-center justify-center min-w-[60px] shadow-md"
+                                            >
+                                                {loadingPausedAt ? <Spinner /> : "Save"}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Overview */}
+                                <div className="mt-8">
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Overview</h3>
+                                    <p className={`text-slate-600 leading-relaxed ${showMore ? '' : 'line-clamp-4'}`}>
+                                        {show.overview}
+                                    </p>
+                                        <button 
+                                            className='mt-2 text-indigo-600 hover:text-indigo-500 text-sm font-medium transition-colors' 
+                                            onClick={toggleShowMore}
+                                        >
+                                            {showMore ? 'Show Less ↑' : 'Read More ↓'}
+                                        </button>
+                                </div>
+
+                                {/* TV Specific: Seasons */}
+                                {type === 'TV_SERIE' && (
+                                    <div className="mt-8 glass-panel p-5 rounded-2xl">
+                                        <h3 className="text-lg font-semibold text-slate-900 mb-3">Seasons</h3>
+                                        <div className="space-y-2 max-h-56 overflow-y-auto pr-1 custom-scrollbar">
+                                            {show.seasons?.map((season, index) => (
+                                                <div key={index} className='flex justify-between items-center py-2 border-b border-slate-200 last:border-0'>
+                                                    <span className="font-medium text-slate-800 text-sm">{season.name}</span>
+                                                    <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
+                                                        {season.episode_count} eps
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                            </div>{/* end right column */}
+                        </div>{/* end two-column row */}
+                    </div>{/* end main content */}
+                </>
+            )}
         </div>
     )
 }

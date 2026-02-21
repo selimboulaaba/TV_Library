@@ -26,8 +26,8 @@ export const NoResults = () => {
         "/nores/16.jpg",
       ]}
     >
-      <section className="grid h-full w-screen place-content-center">
-        <p className="flex items-center gap-2 sm:text-3xl font-bold uppercase text-black">
+      <section className="grid h-full w-full place-content-center">
+        <p className="flex items-center gap-2 sm:text-3xl font-bold uppercase text-slate-400">
           <FiMousePointer />
           <span>No Results Found</span>
         </p>
@@ -125,14 +125,14 @@ const MouseImageTrail = ({
   return (
     <div
       ref={scope}
-      className="relative overflow-hidden h-[69vh] w-full"
+      className="relative overflow-hidden h-[50vh] min-h-[300px] w-full rounded-2xl border border-slate-200 bg-white/50 shadow-sm"
       onMouseMove={handleMouseMove}
     >
       {children}
 
       {images.map((img, index) => (
         <img
-          className="pointer-events-none absolute left-0 top-0 h-48 w-auto rounded-xl border-2 border-black bg-neutral-900 object-cover opacity-0"
+          className="pointer-events-none absolute left-0 top-0 h-48 w-auto rounded-xl border-2 border-slate-200 bg-white object-cover opacity-0 shadow-md"
           src={img}
           alt={`Mouse move image ${index}`}
           key={index}

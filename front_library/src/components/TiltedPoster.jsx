@@ -54,21 +54,21 @@ function TiltedPoster({ src, title }) {
         transform,
         backgroundImage: `url(${src})`
       }}
-      className="bg-cover bg-center relative aspect-[3/4] w-[44vw] sm:w-[45vw] md:w-[22vw] lg:w-[15vw] rounded-xl border border-orange-600 bg-gradient-to-br from-indigo-300 to-violet-300"
+      className="bg-cover bg-center relative aspect-[2/3] w-full h-full rounded-xl border border-slate-200 bg-white"
     >
       <div
         style={{
           transform: "translateZ(75px)",
           transformStyle: "preserve-3d",
         }}
-        className="absolute inset-4 grid place-content-center rounded-xl bg-orange-600 bg-opacity-30 shadow-lg"
+        className="absolute inset-4 grid place-content-center rounded-xl bg-white bg-opacity-20 shadow-lg backdrop-blur-[2px]"
       >
         <p
           style={{
             transform: "translateZ(50px)",
             transformStyle: "preserve-3d",
           }}
-          className="text-center text-2xl font-bold text-white bg-black bg-opacity-50 px-2 py-1 rounded-xl"
+          className="text-center text-xl sm:text-2xl font-bold text-slate-900 bg-white bg-opacity-90 px-3 py-2 rounded-xl shadow-sm"
         >
           {title}
         </p>

@@ -17,8 +17,8 @@ function SeachInput({ value, setValue }) {
     }, [debouncedSearch]);
 
     return (
-        <form onSubmit={event => event.preventDefault()} className='pt-5 pb-3 sm:py-0 mr-0 sm:mr-5'>
-            <div className="search_container">
+        <form onSubmit={event => event.preventDefault()} className='w-full max-w-[280px]'>
+            <div className="search_container w-full">
                 <input type="text" value={debouncedSearch} onChange={event => setDebouncedValue(event.target.value)} name="text" className="search_input" placeholder="Type to search..." />
                 <div className="search_icon">
                     <svg xmlns="http://www.w3.org/2000/svg" className="search_ionicon" viewBox="0 0 512 512">

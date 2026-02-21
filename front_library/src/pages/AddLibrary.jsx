@@ -33,44 +33,76 @@ function AddLibrary() {
     }
 
     return (
-        <div className='grid gap-3 justify-items-center pb-10 mt-[70px]'>
-            <form className='w-[90%] sm:w-[80%] md:w-[60%] grid grid-cols-12 gap-3'>
-                <h1 className='col-span-7 text-center self-center text-xl sm:text-2xl'>Search for: <strong className='underline'>{isMovie ? 'Movies' : 'TV Series'}</strong></h1>
-                <label className="col-start-9 col-span-3 relative inline-flex items-center cursor-pointer">
-                    <input className="sr-only peer" value={isMovie} type="checkbox" onChange={() => setIsMovie(!isMovie)} />
-                    <div className="group peer ring-2  bg-gradient-to-bl from-neutral-800 via-neutral-700 to-neutral-600  rounded-full outline-none duration-1000 after:duration-300 w-20 sm:w-24 h-8 sm:h-12  shadow-md  peer-focus:outline-none  after:content-[''] after:rounded-full after:absolute after:[background:#0D2B39]   peer-checked:after:rotate-180 after:[background:conic-gradient(from_135deg,_#b2a9a9,_#b2a8a8,_#ffffff,_#d7dbd9_,_#ffffff,_#b2a8a8)]  after:outline-none after:h-6 after:w-6 sm:after:h-10 sm:after:w-10 after:top-1 after:left-1   peer-checked:after:translate-x-12 peer-hover:after:scale-125">
-                    </div>
-                </label>
-                <div className="col-start-1 relative col-span-9">
-                    <input
-                        placeholder="Search..."
-                        className="w-[90%] input shadow-lg focus:border-2 border-orange-700 px-5 py-3 rounded-xl transition-all focus:w-[100%] outline-none"
-                        name="search"
-                        type="search"
-                        value={search}
-                        onChange={(event) => setSearch(event.target.value)}
-                    />
-                </div>
-                <button onClick={(event) => { event.preventDefault(); fetchData(1) }} className="col-span-3 relative px-8 rounded-md bg-white isolation-auto z-10 hover:border-2 border-orange-700 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full hover:text-white before:-right-full before:hover:right-0 before:rounded-full before:bg-orange-700 before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700 inline-flex items-center justify-center py-3 text-sm font-semibold text-blackborder shadow-lg gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
-                    Fetch
-                </button>
-            </form>
-            {loading
-                ? <Loading min_h={"60"} />
-                : <>
-                    <div className='grid grid-cols-12 gap-3 p-5'>
-                        {list?.length != 0 && list?.map(object => (
-                            <div className="col-span-6 md:col-span-3 lg:col-span-2 grid w-full place-content-center" key={object.id}>
-                                <Link to={`/${isMovie ? "MOVIE" : "TV_SERIE"}/${object.id}`}>
-                                    <TiltedPoster src={"https://image.tmdb.org/t/p/w500" + object.poster_path} title={object.title ? object.title : object.name} />
-                                </Link>
+        <div className='min-h-screen pb-20 bg-slate-50'>
+            {/* Header Section */}
+            <div className="w-full bg-slate-50 border-b border-slate-200 pt-8 pb-6 px-4">
+                <div className="max-w-4xl mx-auto flex flex-col items-center justify-center gap-6">
+                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight text-center">
+                        Find <span className="text-indigo-600">{isMovie ? 'Movies' : 'TV Series'}</span>
+                    </h1>
+                    
+                    <form 
+                        onSubmit={(e) => { e.preventDefault(); fetchData(1); }}
+                        className='w-full glass-panel p-3 sm:p-4 rounded-2xl flex flex-col sm:flex-row gap-3 sm:gap-4 items-center justify-between'
+                    >
+                        {/* Toggle switch */}
+                        <label className="relative inline-flex items-center cursor-pointer shrink-0 w-full sm:w-auto justify-center sm:justify-start">
+                            <input className="sr-only peer" checked={!isMovie} type="checkbox" onChange={() => setIsMovie(!isMovie)} />
+                            <div className="w-24 h-12 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-12 after:content-[''] after:absolute after:top-1 after:left-[calc(50%-2.75rem)] sm:after:left-1 after:bg-indigo-600 after:rounded-full after:h-10 after:w-10 after:transition-all peer-checked:bg-slate-200 shadow-inner flex items-center justify-between px-3 relative">
+                                <span className={`text-xs font-bold z-10 transition-colors ${isMovie ? 'text-white' : 'text-slate-500'}`}>MV</span>
+                                <span className={`text-xs font-bold z-10 transition-colors ${!isMovie ? 'text-white' : 'text-slate-500'}`}>TV</span>
                             </div>
-                        ))}
-                    </div>
-                    {list != null && list.length != 0 && <Paginator totalPages={totalPages} currentPage={currentPage} fetchData={fetchData} />}
-                    {list != null && list.length === 0 && search != "" && <NoResults />}
-                </>
-            }
+                        </label>
+
+                        <div className="flex w-full gap-2">
+                            {/* Search Input */}
+                            <div className="w-full relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </div>
+                                <input
+                                    placeholder={`Search for ${isMovie ? 'Movies' : 'TV Shows'}...`}
+                                    className="w-full bg-white border border-slate-300 text-slate-900 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-sm placeholder-slate-400"
+                                    name="search"
+                                    type="search"
+                                    value={search}
+                                    onChange={(event) => setSearch(event.target.value)}
+                                />
+                            </div>
+
+                            {/* Submit Button */}
+                            <button 
+                                type="submit"
+                                className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors shadow-md shadow-indigo-500/20 shrink-0 disabled:opacity-50"
+                            >
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {/* Results Grid */}
+            <div className="max-w-7xl mx-auto mt-8 px-4">
+                {loading
+                    ? <Loading min_h={"60"} />
+                    : <>
+                        <div className='grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6 pt-5'>
+                            {list?.length !== 0 && list?.map(object => (
+                                <div className="w-full relative" key={object.id}>
+                                    <Link to={`/${isMovie ? "MOVIE" : "TV_SERIE"}/${object.id}`} className="block w-full shadow-md rounded-lg overflow-hidden border border-slate-200">
+                                        <TiltedPoster src={"https://image.tmdb.org/t/p/w500" + object.poster_path} title={object.title ? object.title : object.name} />
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex justify-center mt-10">
+                            {list != null && list.length !== 0 && <Paginator totalPages={totalPages} currentPage={currentPage} fetchData={fetchData} />}
+                        </div>
+                        {list != null && list.length === 0 && search !== "" && <NoResults />}
+                    </>
+                }
+            </div>
         </div>
     )
 }

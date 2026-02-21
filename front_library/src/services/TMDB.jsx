@@ -17,3 +17,7 @@ export const getById = async (id, type) => {
 export const getTrailerById = async (id, type) => {
     return await axios.get(url + (type === 'MOVIE' ? 'movie' : 'tv') + "/" + id + "/videos", { headers })
 }
+
+export const getTrending = async (page = 1) => {
+    return await axios.get(url + 'trending/all/day?language=en-US&page=' + page, { headers })
+}
