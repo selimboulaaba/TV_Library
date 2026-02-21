@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { login } from '../services/UserService';
 import { Bounce, toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
+import Spinner from '../components/Spinner';
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -83,11 +84,11 @@ function Login() {
               </div>
               <div>
                 <button
-                    disabled={loading}
+                  disabled={loading}
                   type="submit"
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#7f553980] hover:bg-[#63422d80] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#63422d80]"
+                  className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#7f553980] hover:bg-[#63422d80] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#63422d80] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Login
+                  {loading ? <Spinner /> : 'Login'}
                 </button>
               </div>
               <div className='text-center text-sm'>
