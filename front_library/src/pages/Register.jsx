@@ -13,6 +13,10 @@ function Register() {
     const [bgImage, setBgImage] = useState('');
 
     useEffect(() => {
+        document.title = 'Create Account | TV Library'
+    }, [])
+
+    useEffect(() => {
         const fetchBg = async () => {
             try {
                 // Fetch a random page of trending movies/tv shows (page 1-5 for variety)

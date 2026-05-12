@@ -3,7 +3,7 @@ import '../assets/css/Spinner.css'
 
 function Spinner() {
     return (
-        <div className="spinner center">
+        <div className="spinner">
             <div className="spinner-blade"></div>
             <div className="spinner-blade"></div>
             <div className="spinner-blade"></div>

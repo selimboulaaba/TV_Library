@@ -1,7 +1,7 @@
 import {
     FiChevronDown,
 } from "react-icons/fi";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
 function DropDownSelect({ options, icons, selected, setSelected }) {
@@ -10,9 +10,7 @@ function DropDownSelect({ options, icons, selected, setSelected }) {
 
     useEffect(() => {
         function handleClickOutside(event) {
-            const isInside = (containerRef.current && containerRef.current.contains(event.target)) || 
-                             (event.composedPath && event.composedPath().includes(containerRef.current));
-            if (!isInside) {
+            if (containerRef.current && !containerRef.current.contains(event.target)) {
                 setOpen(false);
             }
         }
@@ -25,30 +23,35 @@ function DropDownSelect({ options, icons, selected, setSelected }) {
     }, []);
 
     return (
-        <div ref={containerRef} className="relative w-full">
+        <div ref={containerRef} className="relative min-w-[9rem] w-full">
             <motion.div animate={open ? "open" : "closed"} className="relative">
                 <button
                     type="button"
                     onClick={(e) => { e.preventDefault(); setOpen((pv) => !pv); }}
-                    className={`px-4 sm:px-6 md:px-8 flex w-full justify-between sm:justify-center items-center gap-2 py-2.5 rounded-xl text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm`}
+                    className="flex w-full justify-between items-center gap-2 px-4 py-2.5 rounded-xl text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm"
                 >
-                    <span className="font-medium text-sm">{selected || 'All'}</span>
-                    <motion.span variants={iconVariants}>
+                    <span className="font-medium text-sm whitespace-nowrap">{selected || 'All'}</span>
+                    <motion.span variants={iconVariants} className="shrink-0">
                         <FiChevronDown />
                     </motion.span>
                 </button>
 
-                <motion.ul
-                    initial={wrapperVariants.closed}
-                    variants={wrapperVariants}
-                    style={{ originY: "top" }}
-                    className={`w-full z-40 flex flex-col gap-1 p-2 rounded-xl bg-white border border-slate-200 shadow-xl absolute top-[110%] left-0 overflow-hidden`}
-                >
-                    {options.map((option, index) => (
-                        <Option key={index} setOpen={setOpen} Icon={icons[index]} text={option} setSelected={setSelected} />
-
-                    ))}
-                </motion.ul>
+                <AnimatePresence>
+                    {open && (
+                        <motion.ul
+                            initial="closed"
+                            animate="open"
+                            exit="closed"
+                            variants={wrapperVariants}
+                            style={{ originY: "top" }}
+                            className="min-w-full w-max z-40 flex flex-col gap-1 p-2 rounded-xl bg-white border border-slate-200 shadow-xl absolute top-[110%] left-0 overflow-hidden"
+                        >
+                            {options.map((option, index) => (
+                                <Option key={index} setOpen={setOpen} Icon={icons[index]} text={option} setSelected={setSelected} />
+                            ))}
+                        </motion.ul>
+                    )}
+                </AnimatePresence>
             </motion.div>
         </div>
     );

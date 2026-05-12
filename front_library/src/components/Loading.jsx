@@ -2,7 +2,10 @@ import "../assets/css/Loading.css";
 
 function Loading({ min_h }) {
   return (
-    <div className={`flex justify-center items-center w-full h-full min-h-[${min_h}vh]`}>
+    <div
+      className="flex justify-center items-center w-full h-full"
+      style={{ minHeight: `${min_h || 60}vh` }}
+    >
       <div className="loader">
         <div className="bar1"></div>
         <div className="bar2"></div>

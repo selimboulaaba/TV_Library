@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import DropDownSelect from '../components/DropDownSelect'
 import { getShows } from '../services/ShowService'
 import Loading from '../components/Loading'
@@ -18,27 +19,40 @@ import { CiClock1 } from "react-icons/ci";
 import SeachInput from '../components/SeachInput'
 
 function Library() {
-    const [type, setType] = useState(null)
-    const [shows, setShows] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [totalPages, setTotalPages] = useState(null)
-    const [currentPage, setCurrentPage] = useState(1)
-    const [status, setStatus] = useState(null)
+    const [searchParams, setSearchParams] = useSearchParams()
     const statuses = [null, "To Watch", "Watching", "Completed", "Waiting", "Dropped"]
     const statusesEnum = [null, "TO_WATCH", "WATCHING", "COMPLETED", "WAITING", "DROPPED"]
     const types = [null, "Movie", "Tv"]
     const typesEnum = [null, "MOVIE", "TV_SERIE"]
-    const [title, setTitle] = useState("")
-    const controllerRef = useRef();
 
-    const fetchData = async (type, currentPage, status, title) => {
-        if (controllerRef.current) {
-            controllerRef.current.abort();
-        }
-        controllerRef.current = new AbortController();
-        const signal = controllerRef.current.signal;
+    // All filter state derived from URL params
+    const currentPage = parseInt(searchParams.get('page') || '1')
+    const statusEnum = searchParams.get('status') || null
+    const typeEnum = searchParams.get('type') || null
+    const title = searchParams.get('title') || ''
+
+    // Convert enums back to display values for dropdowns
+    const statusIdx = statusesEnum.indexOf(statusEnum)
+    const status = statuses[statusIdx >= 0 ? statusIdx : 0]
+    const typeIdx = typesEnum.indexOf(typeEnum)
+    const type = types[typeIdx >= 0 ? typeIdx : 0]
+
+    const [shows, setShows] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [totalPages, setTotalPages] = useState(null)
+    const controllerRef = useRef()
+
+    useEffect(() => {
+        document.title = 'My Library | TV Library'
+    }, [])
+
+    const fetchData = async (tEnum, page, sEnum, q) => {
+        if (controllerRef.current) controllerRef.current.abort()
+        controllerRef.current = new AbortController()
+        const signal = controllerRef.current.signal
         const user = localStorage.getItem('user')
-        await getShows((typesEnum[types.indexOf(type)]), currentPage, (statusesEnum[statuses.indexOf(status)]), title, signal, user)
+        setLoading(true)
+        await getShows(tEnum, page, sEnum, q, signal, user)
             .then(response => {
                 setShows(response.data.shows)
                 setTotalPages(response.data.total_pages)
@@ -51,35 +65,36 @@ function Library() {
             })
     }
 
+    // Re-fetch whenever URL params change (handles back/forward navigation)
     useEffect(() => {
-        fetchData(type, currentPage, status, title);
-    }, [])
+        fetchData(typeEnum, currentPage, statusEnum, title)
+    }, [searchParams])
+
+    const updateParams = (updates) => {
+        setSearchParams(prev => {
+            const next = new URLSearchParams(prev)
+            Object.entries(updates).forEach(([key, value]) => {
+                if (value == null || value === '') next.delete(key)
+                else next.set(key, String(value))
+            })
+            return next
+        })
+    }
 
     const handleSetType = (newType) => {
-        setLoading(true)
-        setType(newType);
-        setCurrentPage(1);
-        fetchData(newType, 1, status, title);
+        updateParams({ type: typesEnum[types.indexOf(newType)], page: '1' })
     }
 
     const handleSetStatus = (newStatus) => {
-        setLoading(true)
-        setStatus(newStatus);
-        setCurrentPage(1);
-        fetchData(type, 1, newStatus, title);
+        updateParams({ status: statusesEnum[statuses.indexOf(newStatus)], page: '1' })
     }
 
     const handleSetTitle = (newTitle) => {
-        setLoading(true)
-        setTitle(newTitle);
-        setCurrentPage(1);
-        fetchData(type, 1, status, newTitle);
+        updateParams({ title: newTitle || null, page: '1' })
     }
 
-    const handleSetCurrentTitle = (newCurrentPage) => {
-        setLoading(true)
-        setCurrentPage(newCurrentPage);
-        fetchData(type, newCurrentPage, status, title);
+    const handleSetCurrentPage = (newPage) => {
+        updateParams({ page: newPage })
     }
 
     return (
@@ -91,10 +106,10 @@ function Library() {
                         <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Your Collection</h1>
                         <p className="text-slate-500 mt-1">Manage and track your customized library</p>
                     </div>
-                    
+
                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
                         <div className="w-full sm:w-auto flex justify-center">
-                            <SeachInput value={title} setValue={handleSetTitle} />
+                            <SeachInput key={title} value={title} setValue={handleSetTitle} />
                         </div>
                         <div className="flex w-full sm:w-auto items-center justify-center gap-2">
                             <div className="flex-1 sm:flex-none">
@@ -132,7 +147,7 @@ function Library() {
                                 ))}
                             </div>
                             <div className='flex justify-center pt-14 pb-8'>
-                                <Paginator totalPages={totalPages} currentPage={currentPage} fetchData={handleSetCurrentTitle} />
+                                <Paginator totalPages={totalPages} currentPage={currentPage} fetchData={handleSetCurrentPage} />
                             </div>
                         </>
                         : <NoResults />
